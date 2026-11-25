@@ -1,0 +1,2473 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Misi Wuduk: Pengembaraan di Kampung Durian Runtuh</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts: Fredoka & Nunito for Child-Friendly Movie Title & UI -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Nunito:wght@600;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --leaf-green: #22c55e;
+            --dark-green: #15803d;
+            --sky-blue: #38bdf8;
+            --soft-yellow: #fef08a;
+            --wood-brown: #854d0e;
+            --wood-light: #b45309;
+        }
+
+        * {
+            box-sizing: border-box;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'Nunito', sans-serif;
+            background: #0ea5e9;
+        }
+
+        h1, h2, h3, .font-display {
+            font-family: 'Fredoka', sans-serif;
+        }
+
+        /* HD Movie-Style Interactive Canvas Background */
+        #game-canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            display: block;
+        }
+
+        /* UI Layer Overlay */
+        #ui-layer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10;
+            pointer-events: none;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .pointer-auto {
+            pointer-events: auto;
+        }
+
+        /* 3D Glossy Cartoon Buttons */
+        .btn-3d {
+            position: relative;
+            border-radius: 9999px;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.12s ease;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            border: 3px solid #ffffff;
+        }
+
+        .btn-3d:active {
+            transform: translateY(4px) scale(0.97);
+        }
+
+        .btn-green {
+            background: linear-gradient(180deg, #4ade80 0%, #16a34a 100%);
+            color: white;
+            box-shadow: 0 6px 0 #14532d, 0 10px 20px rgba(0,0,0,0.25);
+            text-shadow: 0 2px 2px rgba(0,0,0,0.3);
+        }
+        .btn-green:hover { filter: brightness(1.06); transform: translateY(-2px); }
+        .btn-green:active { box-shadow: 0 2px 0 #14532d, 0 4px 10px rgba(0,0,0,0.2); }
+
+        .btn-amber {
+            background: linear-gradient(180deg, #facc15 0%, #d97706 100%);
+            color: #451a03;
+            box-shadow: 0 6px 0 #78350f, 0 10px 20px rgba(0,0,0,0.25);
+        }
+        .btn-amber:hover { filter: brightness(1.06); transform: translateY(-2px); }
+        .btn-amber:active { box-shadow: 0 2px 0 #78350f, 0 4px 10px rgba(0,0,0,0.2); }
+
+        .btn-blue {
+            background: linear-gradient(180deg, #38bdf8 0%, #0284c7 100%);
+            color: white;
+            box-shadow: 0 6px 0 #0c4a6e, 0 10px 20px rgba(0,0,0,0.25);
+            text-shadow: 0 2px 2px rgba(0,0,0,0.3);
+        }
+        .btn-blue:hover { filter: brightness(1.06); transform: translateY(-2px); }
+        .btn-blue:active { box-shadow: 0 2px 0 #0c4a6e, 0 4px 10px rgba(0,0,0,0.2); }
+
+        .btn-red {
+            background: linear-gradient(180deg, #f87171 0%, #dc2626 100%);
+            color: white;
+            box-shadow: 0 6px 0 #7f1d1d, 0 10px 20px rgba(0,0,0,0.25);
+            text-shadow: 0 2px 2px rgba(0,0,0,0.3);
+        }
+        .btn-red:hover { filter: brightness(1.06); transform: translateY(-2px); }
+        .btn-red:active { box-shadow: 0 2px 0 #7f1d1d, 0 4px 10px rgba(0,0,0,0.2); }
+
+        .btn-wood {
+            background: linear-gradient(180deg, #d97706 0%, #92400e 100%);
+            color: #fef3c7;
+            box-shadow: 0 5px 0 #451a03, 0 8px 15px rgba(0,0,0,0.3);
+        }
+
+        /* 3D Title Effect */
+        .title-3d {
+            color: #fef08a;
+            text-shadow: 
+                0 2px 0 #ca8a04,
+                0 4px 0 #a16207,
+                0 6px 0 #713f12,
+                0 8px 0 #422006,
+                0 12px 20px rgba(0,0,0,0.45);
+            -webkit-text-stroke: 2px #713f12;
+        }
+
+        .subtitle-3d {
+            color: #ffffff;
+            text-shadow: 0 3px 0 #0369a1, 0 6px 12px rgba(0,0,0,0.4);
+            -webkit-text-stroke: 1px #0369a1;
+        }
+
+        /* Wooden Kampung Panel */
+        .panel-kampung {
+            background: linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%);
+            border: 5px solid #92400e;
+            box-shadow: 0 12px 0 #451a03, 0 20px 35px rgba(0,0,0,0.4), inset 0 2px 6px rgba(255,255,255,0.9);
+            border-radius: 28px;
+        }
+
+        /* Speech Bubble */
+        .speech-bubble {
+            position: relative;
+            background: #ffffff;
+            border: 4px solid #15803d;
+            border-radius: 24px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+        }
+        .speech-bubble::after {
+            content: '';
+            position: absolute;
+            bottom: -16px;
+            left: 32px;
+            border-width: 16px 14px 0;
+            border-style: solid;
+            border-color: #15803d transparent;
+            display: block;
+            width: 0;
+        }
+
+        /* Animations */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-8px) rotate(1deg); }
+        }
+        .animate-float {
+            animation: floatSlow 3.5s ease-in-out infinite;
+        }
+
+        @keyframes popIn {
+            0% { transform: scale(0.7); opacity: 0; }
+            80% { transform: scale(1.04); opacity: 1; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop {
+            animation: popIn 0.35s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+        }
+
+        @keyframes shakeWrong {
+            0%, 100% { transform: translateX(0); }
+            20%, 60% { transform: translateX(-8px); }
+            40%, 80% { transform: translateX(8px); }
+        }
+        .animate-shake {
+            animation: shakeWrong 0.4s ease-in-out;
+        }
+
+        /* Custom Scrollbar for Notes & Manual */
+        .custom-scroll::-webkit-scrollbar {
+            width: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-track {
+            background: #fde68a;
+            border-radius: 10px;
+        }
+        .custom-scroll::-webkit-scrollbar-thumb {
+            background: #b45309;
+            border-radius: 10px;
+            border: 2px solid #fde68a;
+        }
+
+        /* Drag & Drop / Tap Card Styles */
+        .sort-card {
+            cursor: grab;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            touch-action: none;
+        }
+        .sort-card:active {
+            cursor: grabbing;
+        }
+        .sort-card.selected-tap {
+            border-color: #0284c7 !important;
+            background-color: #e0f2fe !important;
+            transform: scale(1.05);
+            box-shadow: 0 0 0 4px rgba(2, 132, 199, 0.4);
+        }
+        .drop-zone-active {
+            transform: scale(1.03);
+            filter: brightness(1.08);
+        }
+
+        /* Water Meter & Stream Animation */
+        @keyframes waterFlow {
+            0% { background-position: 0 0; }
+            100% { background-position: 0 40px; }
+        }
+        .water-stream-anim {
+            background: repeating-linear-gradient(
+                180deg,
+                #38bdf8,
+                #7dd3fc 10px,
+                #0284c7 20px,
+                #38bdf8 40px
+            );
+            background-size: 100% 40px;
+            animation: waterFlow 0.4s linear infinite;
+        }
+
+        /* Real HD Image Showcase & Cinematic Blending */
+        .hero-character-showcase {
+            position: relative;
+            transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+            filter: drop-shadow(0 16px 24px rgba(0, 0, 0, 0.45));
+        }
+        .hero-character-showcase:hover {
+            transform: scale(1.05) translateY(-6px);
+        }
+        .hero-character-celebrate {
+            animation: heroJump 0.55s ease-in-out infinite alternate;
+        }
+        @keyframes heroJump {
+            0% { transform: translateY(0) scale(1.02); }
+            100% { transform: translateY(-18px) scale(1.06); }
+        }
+        .cinematic-vignette {
+            background: radial-gradient(circle at center, transparent 52%, rgba(6, 78, 59, 0.42) 100%);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HD Interactive Scene Canvas (Renders Real Kampung & Upin-Ipin HD Assets + Live Effects) -->
+    <canvas id="game-canvas"></canvas>
+    <div class="fixed inset-0 z-[2] pointer-events-none cinematic-vignette"></div>
+
+    <!-- Loading Screen Overlay -->
+    <div id="loading-screen" class="fixed inset-0 z-50 bg-gradient-to-b from-sky-400 via-sky-300 to-green-500 flex flex-col items-center justify-center p-6 text-center transition-opacity duration-500">
+        <div class="w-24 h-24 rounded-full bg-yellow-300 border-4 border-white shadow-xl flex items-center justify-center mb-4 animate-bounce">
+            <!-- Custom SVG Water Droplet + Crescent -->
+            <svg class="w-14 h-14 text-sky-600" viewBox="0 0 64 64" fill="currentColor">
+                <path d="M32 6C32 6 14 26.5 14 40C14 49.9 22.1 58 32 58C41.9 58 50 49.9 50 40C50 26.5 32 6 32 6ZM27 46C22.6 46 19 42.4 19 38C19 35.2 20.5 31.8 22.5 28.5C21.8 31 22 33.8 23.6 36C25.5 38.6 29 39.5 32 38.5C30.8 42.8 29.2 46 27 46Z"/>
+            </svg>
+        </div>
+        <h1 class="text-3xl md:text-5xl font-bold title-3d mb-2">MISI WUDUK</h1>
+        <p class="text-lg md:text-2xl font-bold subtitle-3d mb-6">Pengembaraan di Kampung Durian Runtuh</p>
+        <div class="w-64 md:w-80 h-5 bg-white/40 rounded-full p-1 border-2 border-white overflow-hidden">
+            <div id="loading-bar" class="h-full bg-green-500 rounded-full transition-all duration-300" style="width: 15%"></div>
+        </div>
+        <p id="loading-text" class="text-white font-bold mt-2 text-sm drop-shadow">Membina Dunia 3D Kampung Durian Runtuh...</p>
+    </div>
+
+    <!-- Main UI Overlay -->
+    <div id="ui-layer">
+        
+        <!-- TOP HUD BAR (Always accessible) -->
+        <header class="w-full p-2 sm:p-3 md:px-6 flex flex-wrap items-center justify-between gap-2 z-30">
+            <!-- Left: Score, Stars & Rank -->
+            <div id="hud-stats" class="hidden pointer-auto flex items-center gap-2 sm:gap-3 bg-white/95 backdrop-blur-md px-3 py-1.5 sm:px-4 sm:py-2 rounded-full border-3 border-amber-700 shadow-lg">
+                <div class="flex items-center gap-1.5">
+                    <span class="w-7 h-7 rounded-full bg-amber-400 border-2 border-amber-700 flex items-center justify-center font-extrabold text-amber-950 text-xs">M</span>
+                    <div>
+                        <div class="text-[10px] uppercase font-extrabold text-amber-800 leading-none">Markah</div>
+                        <div id="hud-score" class="text-base sm:text-lg font-black text-green-700 leading-tight">0</div>
+                    </div>
+                </div>
+                <div class="h-6 w-[2px] bg-amber-200"></div>
+                <div class="flex items-center gap-1">
+                    <svg class="w-6 h-6 text-yellow-400 drop-shadow" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    <span id="hud-stars" class="text-base sm:text-lg font-black text-amber-600">0</span>
+                </div>
+                <div class="hidden md:flex items-center gap-1.5 pl-2 border-l-2 border-amber-200">
+                    <span id="hud-rank" class="text-xs font-extrabold px-2.5 py-1 rounded-full bg-green-100 text-green-800 border border-green-400">Pelatih Baharu</span>
+                </div>
+            </div>
+
+            <!-- Center: Mission Stage Indicator (Shown in-game) -->
+            <div id="hud-mission-pill" class="hidden pointer-auto bg-amber-900/90 text-yellow-200 px-4 py-1.5 rounded-full border-2 border-yellow-400 shadow-md text-xs sm:text-sm font-bold flex items-center gap-2">
+                <span id="hud-stage-label">Peringkat 1/4</span>
+                <span class="text-white">•</span>
+                <span id="hud-progress-text">Soalan 1/5</span>
+            </div>
+
+            <!-- Right: Navigation & Audio Quick Controls -->
+            <div class="pointer-auto flex items-center gap-1.5 sm:gap-2 ml-auto">
+                <button id="btn-quick-audio" onclick="toggleMusicQuick()" title="Muzik Latar Kampung" class="btn-3d btn-amber px-3 py-2 text-xs sm:text-sm">
+                    <svg id="icon-music-on" class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
+                    <svg id="icon-music-off" class="w-5 h-5 hidden text-red-700" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"/><path stroke-linecap="round" stroke-linejoin="round" d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"/></svg>
+                    <span class="hidden sm:inline" id="music-status-label">Muzik: OFF</span>
+                </button>
+
+                <button onclick="openModal('modal-settings')" title="Tetapan Audio & Paparan" class="btn-3d btn-blue p-2 sm:px-3 sm:py-2 text-xs sm:text-sm">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                </button>
+
+                <button id="btn-pause" onclick="togglePause(true)" class="hidden btn-3d btn-wood p-2 sm:px-3 sm:py-2 text-xs sm:text-sm" title="Jeda Permainan">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                </button>
+
+                <button id="btn-home" onclick="returnToMainMenu()" class="hidden btn-3d btn-red p-2 sm:px-3 sm:py-2 text-xs sm:text-sm" title="Menu Utama">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+                </button>
+            </div>
+        </header>
+
+        <!-- SCREEN 1: MAIN MENU -->
+        <main id="screen-main-menu" class="flex-1 flex flex-col justify-between p-4 sm:p-6 overflow-y-auto">
+            <!-- Top Title Banner -->
+            <div class="text-center mt-1 sm:mt-2 animate-float pointer-auto">
+                <span class="inline-block bg-green-700/90 text-yellow-200 border-2 border-yellow-300 px-4 py-1 rounded-full text-xs sm:text-sm font-extrabold tracking-wide shadow-md mb-2">
+                    PENDIDIKAN ISLAM TAHUN 1 - 6 • IBADAH WUDUK
+                </span>
+                <h1 class="text-4xl sm:text-6xl md:text-7xl font-black title-3d tracking-tight leading-none">
+                    MISI WUDUK
+                </h1>
+                <h2 class="text-lg sm:text-2xl md:text-3xl font-extrabold subtitle-3d mt-1">
+                    Pengembaraan di Kampung Durian Runtuh
+                </h2>
+            </div>
+
+            <!-- Center Showcase: Real HD Upin & Ipin Frame -->
+            <div class="my-auto flex flex-col items-center pointer-auto py-2">
+                <div id="hero-upin-ipin-card" onclick="triggerHeroShowcaseReaction()" class="hero-character-showcase cursor-pointer group relative rounded-3xl p-2 bg-gradient-to-b from-yellow-300 via-amber-400 to-green-600 shadow-2xl border-4 border-white max-w-[270px] sm:max-w-[330px] md:max-w-[370px]">
+                    <div class="relative overflow-hidden rounded-2xl bg-sky-200">
+                        <img id="img-hero-upin-ipin"
+                             src="https://raw.githubusercontent.com/AMIRUL278/WUDHU-GO/main/Screenshot%202026-11-25%20002157.png"
+                             alt="Upin dan Ipin Kampung Durian Runtuh"
+                             class="w-full h-auto object-cover block transition-transform duration-500 group-hover:scale-105" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/55 via-transparent to-transparent"></div>
+                        <div class="absolute bottom-2 left-2 right-2 flex items-center justify-between text-white px-2">
+                            <span class="text-xs sm:text-sm font-black drop-shadow">Upin & Ipin</span>
+                            <span class="text-[11px] font-extrabold bg-green-600/90 px-2.5 py-0.5 rounded-full border border-yellow-300">Klik Kami! ✨</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Bottom Menu Buttons -->
+            <div class="w-full max-w-4xl mx-auto pointer-auto mb-2 sm:mb-4">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
+                    <button onclick="startNewOrContinueGame()" class="btn-3d btn-green py-3.5 px-5 text-lg sm:text-xl col-span-1 sm:col-span-2 lg:col-span-4 shadow-2xl">
+                        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/></svg>
+                        MULA BERMAIN
+                    </button>
+
+                    <button onclick="openStageSelect()" class="btn-3d btn-amber py-3 px-4 text-sm sm:text-base">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"/></svg>
+                        PILIH MISI
+                    </button>
+
+                    <button onclick="openModal('modal-notes')" class="btn-3d btn-blue py-3 px-4 text-sm sm:text-base">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+                        NOTA WUDUK
+                    </button>
+
+                    <button onclick="openModal('modal-manual')" class="btn-3d btn-wood py-3 px-4 text-sm sm:text-base">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                        MANUAL
+                    </button>
+
+                    <button onclick="openModal('modal-settings')" class="btn-3d btn-red py-3 px-4 text-sm sm:text-base">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"/></svg>
+                        TETAPAN
+                    </button>
+                </div>
+            </div>
+        </main>
+
+        <!-- SCREEN 2: ACTIVE GAMEPLAY CONTAINER -->
+        <section id="screen-gameplay" class="hidden flex-1 flex flex-col justify-between p-3 sm:p-5 overflow-y-auto">
+            
+            <!-- Character Dialogue Box (Upin, Ipin, Opah, Kak Ros) -->
+            <div id="character-dialogue-bar" class="pointer-auto max-w-3xl w-full mx-auto mt-1 animate-pop">
+                <div class="speech-bubble p-3 sm:p-4 flex items-center gap-3 sm:gap-4">
+                    <!-- Dynamic Character Avatar SVG -->
+                    <div id="dialogue-avatar" class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-yellow-100 border-3 border-amber-600 flex-shrink-0 flex items-center justify-center overflow-hidden shadow-inner">
+                        <!-- Injected via JS -->
+                    </div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2">
+                            <span id="dialogue-speaker" class="font-display font-bold text-sm sm:text-base text-green-700">Opah</span>
+                            <span id="dialogue-emotion" class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-bold">Membimbing</span>
+                        </div>
+                        <p id="dialogue-text" class="text-gray-800 font-bold text-sm sm:text-base leading-snug mt-0.5">
+                            "Upin, Ipin, mari kita belajar amalan sunat dan perkara makruh ketika berwuduk sebelum ke surau!"
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dynamic Stage Workspace -->
+            <div id="stage-workspace" class="pointer-auto w-full max-w-5xl mx-auto my-auto py-2">
+                <!-- Stage 1, 2, 3, or 4 UI is dynamically rendered here -->
+            </div>
+
+            <!-- Bottom Stage Helper Bar -->
+            <div class="pointer-auto max-w-4xl w-full mx-auto flex items-center justify-between gap-2 bg-white/90 backdrop-blur px-4 py-2 rounded-2xl border-2 border-amber-700 shadow-md">
+                <button onclick="openModal('modal-notes')" class="text-xs sm:text-sm font-extrabold text-sky-700 hover:underline flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M9 4.804A7.968 7.968 0 005.5 4c-1.255 0-2.443.29-3.5.804v10A7.969 7.969 0 015.5 14c1.669 0 3.218.51 4.5 1.385A7.962 7.962 0 0114.5 14c1.255 0 2.443.29 3.5.804v-10A7.968 7.968 0 0014.5 4c-1.255 0-2.443.29-3.5.804V12a1 1 0 11-2 0V4.804z"/></svg>
+                    Rujuk Nota Wuduk
+                </button>
+                <div class="flex-1 mx-3 bg-gray-200 h-3 rounded-full overflow-hidden border border-gray-300">
+                    <div id="stage-progress-bar" class="h-full bg-gradient-to-r from-green-400 to-emerald-600 transition-all duration-300" style="width: 20%"></div>
+                </div>
+                <button onclick="restartCurrentStage()" class="text-xs sm:text-sm font-extrabold text-amber-800 hover:underline flex items-center gap-1">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+                    Ulang Misi
+                </button>
+            </div>
+        </section>
+
+        <!-- SCREEN 3: STAGE SELECT MAP -->
+        <section id="screen-stage-select" class="hidden pointer-auto flex-1 flex items-center justify-center p-4 overflow-y-auto">
+            <div class="panel-kampung w-full max-w-4xl p-5 sm:p-7 animate-pop">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h2 class="text-2xl sm:text-3xl font-black text-amber-900">Peta Pengembaraan Kampung</h2>
+                        <p class="text-sm text-amber-800 font-bold">Pilih peringkat misi untuk mengumpul bintang dan lencana!</p>
+                    </div>
+                    <button onclick="returnToMainMenu()" class="btn-3d btn-red px-4 py-2 text-sm">Kembali</button>
+                </div>
+
+                <!-- Journey Banner with Real Perjalanan Upin & Ipin Image -->
+                <div class="relative rounded-2xl overflow-hidden border-4 border-amber-500 shadow-lg mb-4 h-36 sm:h-44">
+                    <img src="https://raw.githubusercontent.com/AMIRUL278/WUDHU-GO/main/Screenshot%202026-11-25%20002227.png"
+                         alt="Perjalanan Upin dan Ipin ke Surau"
+                         class="w-full h-full object-cover object-center" />
+                    <div class="absolute inset-0 bg-gradient-to-r from-black/75 via-black/35 to-transparent flex items-center p-4 sm:p-6">
+                        <div class="max-w-md text-white">
+                            <span class="bg-yellow-400 text-amber-950 text-[11px] font-black px-2.5 py-0.5 rounded-full uppercase">Laluan Pengembaraan</span>
+                            <h3 class="text-lg sm:text-2xl font-black mt-1 drop-shadow">Perjalanan Upin & Ipin ke Surau</h3>
+                            <p class="text-xs sm:text-sm text-amber-100 font-semibold">Selesaikan keempat-empat cabaran di sepanjang jalan kampung!</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Stage Selection Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <!-- Stage 1 -->
+                    <div onclick="startStage(1)" class="cursor-pointer bg-white hover:bg-green-50 border-3 border-green-600 rounded-2xl p-4 shadow-md transition transform hover:-translate-y-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="bg-green-600 text-white text-xs font-black px-3 py-0.5 rounded-full">PERINGKAT 1</span>
+                                <span id="badge-stage-1" class="text-xs font-extrabold text-amber-600">★ 0/3</span>
+                            </div>
+                            <h3 class="text-lg font-black text-gray-800">Jelajah Kampung: Kenali Amalan</h3>
+                            <p class="text-xs text-gray-600 font-semibold mt-1">Bantu Upin & Ipin mengenal pasti situasi sunat dan makruh di sekitar kampung.</p>
+                        </div>
+                        <div class="mt-3 text-right">
+                            <span class="text-xs font-black text-green-700">Main Sekarang →</span>
+                        </div>
+                    </div>
+
+                    <!-- Stage 2 -->
+                    <div onclick="startStage(2)" class="cursor-pointer bg-white hover:bg-sky-50 border-3 border-sky-600 rounded-2xl p-4 shadow-md transition transform hover:-translate-y-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="bg-sky-600 text-white text-xs font-black px-3 py-0.5 rounded-full">PERINGKAT 2</span>
+                                <span id="badge-stage-2" class="text-xs font-extrabold text-amber-600">★ 0/3</span>
+                            </div>
+                            <h3 class="text-lg font-black text-gray-800">Cabaran Asingkan Kad</h3>
+                            <p class="text-xs text-gray-600 font-semibold mt-1">Seret (Drag & Drop) atau sentuh kad amalan ke Zon Hijau (Sunat) dan Zon Merah (Makruh).</p>
+                        </div>
+                        <div class="mt-3 text-right">
+                            <span class="text-xs font-black text-sky-700">Main Sekarang →</span>
+                        </div>
+                    </div>
+
+                    <!-- Stage 3 -->
+                    <div onclick="startStage(3)" class="cursor-pointer bg-white hover:bg-amber-50 border-3 border-amber-600 rounded-2xl p-4 shadow-md transition transform hover:-translate-y-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="bg-amber-600 text-white text-xs font-black px-3 py-0.5 rounded-full">PERINGKAT 3</span>
+                                <span id="badge-stage-3" class="text-xs font-extrabold text-amber-600">★ 0/3</span>
+                            </div>
+                            <h3 class="text-lg font-black text-gray-800">Misi Jimat Air di Tempat Wuduk</h3>
+                            <p class="text-xs text-gray-600 font-semibold mt-1">Kawal paip air surau bersama Upin & Ipin agar wuduk sempurna tanpa pembaziran.</p>
+                        </div>
+                        <div class="mt-3 text-right">
+                            <span class="text-xs font-black text-amber-700">Main Sekarang →</span>
+                        </div>
+                    </div>
+
+                    <!-- Stage 4 -->
+                    <div onclick="startStage(4)" class="cursor-pointer bg-white hover:bg-purple-50 border-3 border-purple-600 rounded-2xl p-4 shadow-md transition transform hover:-translate-y-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="bg-purple-600 text-white text-xs font-black px-3 py-0.5 rounded-full">PERINGKAT 4</span>
+                                <span id="badge-stage-4" class="text-xs font-extrabold text-amber-600">★ 0/3</span>
+                            </div>
+                            <h3 class="text-lg font-black text-gray-800">Peperiksaan Akhir: Pakar Wuduk</h3>
+                            <p class="text-xs text-gray-600 font-semibold mt-1">10 soalan cabaran pantas menguji kefahaman sunat & makruh berwuduk!</p>
+                        </div>
+                        <div class="mt-3 text-right">
+                            <span class="text-xs font-black text-purple-700">Main Sekarang →</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 4: GRAND VICTORY SCREEN -->
+        <section id="screen-victory" class="hidden pointer-auto flex-1 flex items-center justify-center p-4 overflow-y-auto">
+            <div class="panel-kampung w-full max-w-2xl p-6 sm:p-8 text-center animate-pop">
+                <div class="inline-block bg-yellow-400 text-amber-950 font-black px-4 py-1 rounded-full text-xs sm:text-sm border-2 border-amber-700 mb-3 shadow">
+                    🎉 TAHNIAH! SEMUA MISI SELESAI! 🎉
+                </div>
+                <h2 class="text-2xl sm:text-4xl font-black text-green-700 mb-2 leading-tight">
+                    JUARA WUDUK KAMPUNG DURIAN RUNTUH!
+                </h2>
+                <p class="text-gray-700 font-bold text-sm sm:text-base mb-4">
+                    Upin & Ipin: "Yeay! Kita dah berjaya! Hebatlah awak! Sekarang kita dah tahu perkara sunat dan makruh ketika berwuduk!"
+                </p>
+
+                <!-- Stars Display -->
+                <div id="victory-stars-display" class="flex justify-center gap-2 my-4">
+                    <!-- Populated via JS -->
+                </div>
+
+                <div class="bg-white rounded-2xl border-3 border-amber-400 p-4 mb-6 grid grid-cols-2 gap-4">
+                    <div>
+                        <div class="text-xs font-extrabold text-gray-500 uppercase">Markah Keseluruhan</div>
+                        <div id="victory-final-score" class="text-3xl font-black text-green-700">0</div>
+                    </div>
+                    <div>
+                        <div class="text-xs font-extrabold text-gray-500 uppercase">Gelaran Dicapai</div>
+                        <div id="victory-final-rank" class="text-sm sm:text-base font-black text-amber-800 mt-1">Juara Wuduk</div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col sm:flex-row gap-3 justify-center">
+                    <button onclick="resetFullGame()" class="btn-3d btn-green py-3 px-6 text-base sm:text-lg">
+                        MAIN SEMULA DARI AWAL
+                    </button>
+                    <button onclick="returnToMainMenu()" class="btn-3d btn-amber py-3 px-6 text-base sm:text-lg">
+                        KEMBALI KE MENU UTAMA
+                    </button>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- MODAL 1: FEEDBACK POPUP (INSTANT EXPLANATION) -->
+    <div id="modal-feedback" class="hidden fixed inset-0 z-40 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="panel-kampung w-full max-w-lg p-6 text-center animate-pop">
+            <div id="feedback-icon" class="w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-3 border-4 border-white shadow-lg">
+                <!-- Icon injected via JS -->
+            </div>
+            <h3 id="feedback-title" class="text-2xl sm:text-3xl font-black mb-2">Betul, Betul, Betul!</h3>
+            <p id="feedback-character-quote" class="text-sm font-extrabold text-green-800 bg-green-100 rounded-xl p-2.5 mb-3 border border-green-300">
+                "Upin & Ipin gembira dengan jawapan kamu!"
+            </p>
+            <p id="feedback-explanation" class="text-gray-800 font-bold text-sm sm:text-base leading-relaxed mb-5">
+                Penerangan jawapan akan dipaparkan di sini.
+            </p>
+            <button id="btn-feedback-continue" onclick="closeFeedbackModal()" class="btn-3d btn-green w-full py-3 text-lg">
+                TERUSKAN
+            </button>
+        </div>
+    </div>
+
+    <!-- MODAL 2: MANUAL PERMAINAN -->
+    <div id="modal-manual" class="hidden fixed inset-0 z-40 bg-black/65 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
+        <div class="panel-kampung w-full max-w-4xl max-h-[90vh] flex flex-col p-5 sm:p-7 animate-pop">
+            <div class="flex items-center justify-between pb-3 border-b-2 border-amber-300">
+                <h2 class="text-2xl sm:text-3xl font-black text-amber-900">Manual Permainan</h2>
+                <button onclick="closeModal('modal-manual')" class="btn-3d btn-red px-4 py-2 text-sm">Tutup ✕</button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scroll pr-2 mt-4 space-y-5 text-gray-800">
+                <!-- Upin Ipin Dialog Intro -->
+                <div class="bg-green-100 border-3 border-green-600 rounded-2xl p-4 flex items-center gap-4">
+                    <div id="manual-avatar-box" class="flex-shrink-0"></div>
+                    <div>
+                        <div class="font-black text-green-800 text-base">Upin & Ipin Menerangkan:</div>
+                        <p class="text-sm sm:text-base font-bold text-gray-800">
+                            "Hai kawan-kawan! Selamat datang ke Kampung Durian Runtuh! Jom baca panduan ringkas ini supaya kita dapat mengumpul semua bintang dan menjadi Juara Wuduk!"
+                        </p>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- A. Cara Bermain -->
+                    <div class="bg-white p-4 rounded-2xl border-2 border-amber-400 shadow-sm">
+                        <h3 class="text-lg font-black text-amber-800 mb-2 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-amber-500 text-white flex items-center justify-center text-sm">A</span>
+                            Cara Bermain
+                        </h3>
+                        <ul class="text-sm font-semibold space-y-2 list-disc pl-5 text-gray-700">
+                            <li><strong>Komputer:</strong> Gunakan tetikus untuk klik objek, butang jawapan, atau seret kad (<em>Drag & Drop</em>).</li>
+                            <li><strong>Telefon & Tablet:</strong> Sentuh kad pilihan dahulu, kemudian sentuh kotak kategori jawapan (Zon Hijau atau Zon Merah).</li>
+                            <li>Baca dialog Opah, Upin dan Ipin pada setiap peringkat sebelum menjawab.</li>
+                        </ul>
+                    </div>
+
+                    <!-- B. Sistem Pemarkahan -->
+                    <div class="bg-white p-4 rounded-2xl border-2 border-green-400 shadow-sm">
+                        <h3 class="text-lg font-black text-green-800 mb-2 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-green-600 text-white flex items-center justify-center text-sm">B</span>
+                            Sistem Pemarkahan
+                        </h3>
+                        <ul class="text-sm font-semibold space-y-2 list-disc pl-5 text-gray-700">
+                            <li><strong>Jawapan Betul:</strong> Memperoleh +10 hingga +20 markah serta kesan bunyi ceria!</li>
+                            <li><strong>Jawapan Salah:</strong> Jangan risau! Opah akan memberi penerangan dan anda boleh mencuba semula.</li>
+                            <li><strong>Bintang Misi:</strong> Setiap peringkat menganugerahkan sehingga 3 bintang pencapaian.</li>
+                        </ul>
+                    </div>
+
+                    <!-- C. Sistem Navigasi -->
+                    <div class="bg-white p-4 rounded-2xl border-2 border-sky-400 shadow-sm">
+                        <h3 class="text-lg font-black text-sky-800 mb-2 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-sky-600 text-white flex items-center justify-center text-sm">C</span>
+                            Sistem Navigasi
+                        </h3>
+                        <ul class="text-sm font-semibold space-y-2 list-disc pl-5 text-gray-700">
+                            <li><strong>HOME (Merah):</strong> Kembali ke Menu Utama pada bila-bila masa.</li>
+                            <li><strong>PAUSE (Coklat):</strong> Menghentikan permainan sementara untuk berehat.</li>
+                            <li><strong>SOUND (Kuning):</strong> Menghidupkan atau mematikan muzik latar kampung.</li>
+                            <li><strong>ULANG MISI:</strong> Mengulangi cabaran pada peringkat semasa.</li>
+                        </ul>
+                    </div>
+
+                    <!-- D. Panduan Kemenangan -->
+                    <div class="bg-white p-4 rounded-2xl border-2 border-purple-400 shadow-sm">
+                        <h3 class="text-lg font-black text-purple-800 mb-2 flex items-center gap-2">
+                            <span class="w-7 h-7 rounded-full bg-purple-600 text-white flex items-center justify-center text-sm">D</span>
+                            Gelaran & Pencapaian
+                        </h3>
+                        <ul class="text-sm font-semibold space-y-1.5 text-gray-700">
+                            <li>🏅 <strong>50 Mata:</strong> Pelatih Wuduk</li>
+                            <li>🥈 <strong>100 Mata:</strong> Pembantu Opah</li>
+                            <li>🥇 <strong>200 Mata:</strong> Pakar Wuduk</li>
+                            <li>👑 <strong>300+ Mata:</strong> JUARA WUDUK KAMPUNG DURIAN RUNTUH!</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 3: NOTA PEMBELAJARAN INTERAKTIF -->
+    <div id="modal-notes" class="hidden fixed inset-0 z-40 bg-black/65 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6">
+        <div class="panel-kampung w-full max-w-5xl max-h-[90vh] flex flex-col p-5 sm:p-7 animate-pop">
+            <div class="flex flex-wrap items-center justify-between gap-2 pb-3 border-b-2 border-amber-300">
+                <div>
+                    <h2 class="text-2xl sm:text-3xl font-black text-amber-900">Nota Pembelajaran Wuduk</h2>
+                    <p class="text-xs sm:text-sm font-bold text-gray-700">Pendidikan Islam (Mazhab Syafi'i) • Perkara Sunat & Makruh Ketika Berwuduk</p>
+                </div>
+                <button onclick="closeModal('modal-notes')" class="btn-3d btn-red px-4 py-2 text-sm">Tutup ✕</button>
+            </div>
+
+            <!-- Important Fiqh Accuracy Reminder Banner -->
+            <div class="bg-sky-100 border-l-4 border-sky-600 p-3 rounded-r-xl mt-3 text-xs sm:text-sm font-bold text-sky-950">
+                💡 <strong>Peringatan Penting Opah:</strong> Perkara <strong>Sunat</strong> mendapat pahala jika dilakukan, tetapi wuduk <strong>tetap sah</strong> jika ditinggalkan. Perkara <strong>Makruh</strong> pula elok dielakkan kerana mengurangkan pahala, namun <strong>tidak membatalkan wuduk</strong>. Basuhan wajib yang sempurna hanyalah <strong>1 kali</strong>, manakala <strong>3 kali</strong> adalah sunat!
+            </div>
+
+            <!-- Tab Switcher -->
+            <div class="flex gap-2 mt-3">
+                <button id="tab-btn-sunat" onclick="switchNoteTab('sunat')" class="btn-3d btn-green flex-1 py-2.5 text-sm sm:text-base">
+                    BAHAGIAN A: 10 PERKARA SUNAT
+                </button>
+                <button id="tab-btn-makruh" onclick="switchNoteTab('makruh')" class="btn-3d btn-red flex-1 py-2.5 text-sm sm:text-base opacity-75">
+                    BAHAGIAN B: 5 PERKARA MAKRUH
+                </button>
+            </div>
+
+            <!-- Cards Container -->
+            <div id="notes-cards-container" class="flex-1 overflow-y-auto custom-scroll pr-2 mt-4 grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Dynamically Populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 4: TETAPAN & KAWALAN AUDIO -->
+    <div id="modal-settings" class="hidden fixed inset-0 z-40 bg-black/65 backdrop-blur-sm flex items-center justify-center p-4">
+        <div class="panel-kampung w-full max-w-md p-6 animate-pop">
+            <div class="flex items-center justify-between pb-3 border-b-2 border-amber-300 mb-4">
+                <h2 class="text-2xl font-black text-amber-900">Tetapan Audio & Sistem</h2>
+                <button onclick="closeModal('modal-settings')" class="btn-3d btn-red px-3 py-1.5 text-sm">✕</button>
+            </div>
+
+            <div class="space-y-5">
+                <!-- Background Music Toggle -->
+                <div class="bg-white p-4 rounded-2xl border-2 border-amber-300">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-black text-gray-800">Muzik Latar Kampung</span>
+                        <button id="settings-music-toggle" onclick="toggleMusicQuick()" class="btn-3d btn-green px-4 py-1.5 text-xs">
+                            HIDUPKAN
+                        </button>
+                    </div>
+                    <p class="text-xs text-gray-500 font-semibold mb-3">Instrumental seruling lembut, petikan gambus, kicauan burung & air sungai.</p>
+                    
+                    <label class="block text-xs font-extrabold text-amber-900 mb-1">Kelantangan Muzik: <span id="bgm-vol-text">60%</span></label>
+                    <input id="slider-bgm-vol" type="range" min="0" max="100" value="60" oninput="updateAudioVolumes()" class="w-full accent-green-600 cursor-pointer">
+                </div>
+
+                <!-- Sound Effects (SFX) Control -->
+                <div class="bg-white p-4 rounded-2xl border-2 border-amber-300">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="font-black text-gray-800">Kesan Bunyi (SFX)</span>
+                        <button id="settings-sfx-toggle" onclick="toggleSfxQuick()" class="btn-3d btn-blue px-4 py-1.5 text-xs">
+                            AKTIF
+                        </button>
+                    </div>
+                    <label class="block text-xs font-extrabold text-amber-900 mb-1">Kelantangan Kesan Bunyi: <span id="sfx-vol-text">80%</span></label>
+                    <input id="slider-sfx-vol" type="range" min="0" max="100" value="80" oninput="updateAudioVolumes()" class="w-full accent-sky-600 cursor-pointer">
+                </div>
+
+                <!-- Reset Progress -->
+                <div class="bg-red-50 p-3 rounded-2xl border-2 border-red-200 flex items-center justify-between">
+                    <div>
+                        <div class="text-sm font-black text-red-900">Set Semula Kemajuan</div>
+                        <div class="text-xs text-red-700 font-semibold">Padam markah & bintang tersimpan</div>
+                    </div>
+                    <button onclick="resetFullGame(); closeModal('modal-settings');" class="btn-3d btn-red px-3 py-1.5 text-xs">
+                        Padam
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL 5: PAUSE OVERLAY -->
+    <div id="modal-pause" class="hidden fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4">
+        <div class="panel-kampung w-full max-w-sm p-6 text-center animate-pop">
+            <h2 class="text-3xl font-black text-amber-900 mb-2">Permainan Dijeda</h2>
+            <p class="text-sm font-bold text-gray-700 mb-5">Upin & Ipin sedang menunggu anda menyambung pengembaraan!</p>
+            <div class="space-y-3">
+                <button onclick="togglePause(false)" class="btn-3d btn-green w-full py-3 text-lg">SAMBUNG BERMAIN</button>
+                <button onclick="togglePause(false); restartCurrentStage();" class="btn-3d btn-amber w-full py-3 text-base">ULANG PERINGKAT INI</button>
+                <button onclick="togglePause(false); returnToMainMenu();" class="btn-3d btn-red w-full py-3 text-base">KEMBALI KE MENU UTAMA</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * ============================================================================
+         * 1. SISTEM AUDIO WEB AUDIO API (MUZIK KAMPUNG & KESAN BUNYI SINTETIK)
+         * ============================================================================
+         * Menghasilkan muzik instrumental kampung Melayu (seruling lembut, petikan
+         * gambus pentatonik/hijaz ringan, bunyi air sungai mengalir dan kicauan burung)
+         * tanpa bergantung pada fail audio luaran.
+         */
+        class KampungAudioEngine {
+            constructor() {
+                this.ctx = null;
+                this.isMusicPlaying = false;
+                this.isSfxEnabled = true;
+                this.bgmVolume = 0.6;
+                this.sfxVolume = 0.8;
+                this.bgmMasterGain = null;
+                this.sfxMasterGain = null;
+                this.melodyTimer = null;
+                this.birdTimer = null;
+                this.riverNode = null;
+                this.noteIndex = 0;
+
+                // Melodi Seruling & Gambus Kampung Ceria (Skala Major Pentatonik / Melayu Asli lembut)
+                this.melodyNotes = [
+                    { freq: 523.25, dur: 0.6 }, // C5
+                    { freq: 587.33, dur: 0.4 }, // D5
+                    { freq: 659.25, dur: 0.8 }, // E5
+                    { freq: 783.99, dur: 0.6 }, // G5
+                    { freq: 659.25, dur: 0.4 }, // E5
+                    { freq: 587.33, dur: 0.8 }, // D5
+                    { freq: 523.25, dur: 0.6 }, // C5
+                    { freq: 440.00, dur: 0.6 }, // A4
+                    { freq: 392.00, dur: 1.0 }, // G4
+                    { freq: 440.00, dur: 0.5 }, // A4
+                    { freq: 523.25, dur: 0.5 }, // C5
+                    { freq: 587.33, dur: 0.8 }, // D5
+                    { freq: 659.25, dur: 0.6 }, // E5
+                    { freq: 523.25, dur: 1.2 }  // C5
+                ];
+            }
+
+            init() {
+                if (!this.ctx) {
+                    const AudioContext = window.AudioContext || window.webkitAudioContext;
+                    this.ctx = new AudioContext();
+                    this.bgmMasterGain = this.ctx.createGain();
+                    this.bgmMasterGain.gain.value = this.bgmVolume * 0.35;
+                    this.bgmMasterGain.connect(this.ctx.destination);
+
+                    this.sfxMasterGain = this.ctx.createGain();
+                    this.sfxMasterGain.gain.value = this.sfxVolume * 0.5;
+                    this.sfxMasterGain.connect(this.ctx.destination);
+                }
+                if (this.ctx.state === 'suspended') {
+                    this.ctx.resume();
+                }
+            }
+
+            startBGM() {
+                this.init();
+                if (this.isMusicPlaying) return;
+                this.isMusicPlaying = true;
+                this.bgmMasterGain.gain.setTargetAtTime(this.bgmVolume * 0.35, this.ctx.currentTime, 0.2);
+
+                // 1. Bunyi Sungai Mengalir Lembut (Filtered Pink/Brown Noise)
+                this.startRiverAmbience();
+
+                // 2. Gelung Melodi Seruling & Petikan Gambus
+                const playNextStep = () => {
+                    if (!this.isMusicPlaying) return;
+                    const note = this.melodyNotes[this.noteIndex % this.melodyNotes.length];
+                    this.playFluteNote(note.freq, note.dur);
+                    if (this.noteIndex % 2 === 0) {
+                        this.playGambusPluck(note.freq * 0.5);
+                    }
+                    this.noteIndex++;
+                    this.melodyTimer = setTimeout(playNextStep, note.dur * 1000);
+                };
+                playNextStep();
+
+                // 3. Kicauan Burung Kampung Berkala
+                const scheduleBird = () => {
+                    if (!this.isMusicPlaying) return;
+                    this.playBirdChirp();
+                    this.birdTimer = setTimeout(scheduleBird, 3200 + Math.random() * 4000);
+                };
+                this.birdTimer = setTimeout(scheduleBird, 1500);
+                updateAudioUI();
+            }
+
+            stopBGM() {
+                this.isMusicPlaying = false;
+                clearTimeout(this.melodyTimer);
+                clearTimeout(this.birdTimer);
+                if (this.riverNode) {
+                    try { this.riverNode.stop(); } catch (e) {}
+                    this.riverNode = null;
+                }
+                updateAudioUI();
+            }
+
+            startRiverAmbience() {
+                if (!this.ctx) return;
+                const bufferSize = 2 * this.ctx.sampleRate;
+                const noiseBuffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                const output = noiseBuffer.getChannelData(0);
+                let lastOut = 0.0;
+                for (let i = 0; i < bufferSize; i++) {
+                    const white = Math.random() * 2 - 1;
+                    output[i] = (lastOut + (0.02 * white)) / 1.02;
+                    lastOut = output[i];
+                    output[i] *= 0.15;
+                }
+                const whiteNoise = this.ctx.createBufferSource();
+                whiteNoise.buffer = noiseBuffer;
+                whiteNoise.loop = true;
+
+                const filter = this.ctx.createBiquadFilter();
+                filter.type = 'lowpass';
+                filter.frequency.value = 420;
+
+                const riverGain = this.ctx.createGain();
+                riverGain.gain.value = 0.25;
+
+                whiteNoise.connect(filter);
+                filter.connect(riverGain);
+                riverGain.connect(this.bgmMasterGain);
+                whiteNoise.start(0);
+                this.riverNode = whiteNoise;
+            }
+
+            playFluteNote(freq, duration) {
+                if (!this.ctx || !this.isMusicPlaying) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(freq, now);
+                // Vibrato lembut seruling buluh
+                osc.frequency.linearRampToValueAtTime(freq * 1.008, now + duration * 0.5);
+                osc.frequency.linearRampToValueAtTime(freq, now + duration);
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.linearRampToValueAtTime(0.28, now + 0.12);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + duration + 0.15);
+
+                osc.connect(gain);
+                gain.connect(this.bgmMasterGain);
+                osc.start(now);
+                osc.stop(now + duration + 0.2);
+            }
+
+            playGambusPluck(freq) {
+                if (!this.ctx || !this.isMusicPlaying) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const filter = this.ctx.createBiquadFilter();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'triangle';
+                osc.frequency.setValueAtTime(freq, now);
+
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(1200, now);
+                filter.frequency.exponentialRampToValueAtTime(300, now + 0.45);
+
+                gain.gain.setValueAtTime(0.22, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.5);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(this.bgmMasterGain);
+                osc.start(now);
+                osc.stop(now + 0.55);
+            }
+
+            playBirdChirp() {
+                if (!this.ctx || !this.isMusicPlaying) return;
+                const now = this.ctx.currentTime;
+                const osc = this.ctx.createOscillator();
+                const gain = this.ctx.createGain();
+
+                osc.type = 'sine';
+                const base = 2200 + Math.random() * 600;
+                osc.frequency.setValueAtTime(base, now);
+                osc.frequency.exponentialRampToValueAtTime(base + 700, now + 0.08);
+                osc.frequency.exponentialRampToValueAtTime(base - 200, now + 0.16);
+
+                gain.gain.setValueAtTime(0.001, now);
+                gain.gain.linearRampToValueAtTime(0.09, now + 0.04);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
+
+                osc.connect(gain);
+                gain.connect(this.bgmMasterGain);
+                osc.start(now);
+                osc.stop(now + 0.2);
+            }
+
+            // Kesan Bunyi (SFX)
+            playSFX(type) {
+                if (!this.isSfxEnabled) return;
+                this.init();
+                const now = this.ctx.currentTime;
+
+                if (type === 'click') {
+                    const osc = this.ctx.createOscillator();
+                    const gain = this.ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(600, now);
+                    osc.frequency.exponentialRampToValueAtTime(900, now + 0.07);
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+                    osc.connect(gain);
+                    gain.connect(this.sfxMasterGain);
+                    osc.start(now);
+                    osc.stop(now + 0.09);
+                } else if (type === 'correct') {
+                    // Arpeggio ceria C5 - E5 - G5 - C6
+                    const notes = [523.25, 659.25, 783.99, 1046.50];
+                    notes.forEach((f, idx) => {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(f, now + idx * 0.08);
+                        gain.gain.setValueAtTime(0.35, now + idx * 0.08);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.08 + 0.35);
+                        osc.connect(gain);
+                        gain.connect(this.sfxMasterGain);
+                        osc.start(now + idx * 0.08);
+                        osc.stop(now + idx * 0.08 + 0.36);
+                    });
+                } else if (type === 'wrong') {
+                    // Bunyi lembut mesra kanak-kanak (tidak mengejutkan)
+                    const notes = [330, 277.18];
+                    notes.forEach((f, idx) => {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = 'sine';
+                        osc.frequency.setValueAtTime(f, now + idx * 0.14);
+                        gain.gain.setValueAtTime(0.3, now + idx * 0.14);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.14 + 0.25);
+                        osc.connect(gain);
+                        gain.connect(this.sfxMasterGain);
+                        osc.start(now + idx * 0.14);
+                        osc.stop(now + idx * 0.14 + 0.26);
+                    });
+                } else if (type === 'star' || type === 'victory') {
+                    const fanfare = [523.25, 659.25, 783.99, 1046.50, 783.99, 1046.50];
+                    fanfare.forEach((f, idx) => {
+                        const osc = this.ctx.createOscillator();
+                        const gain = this.ctx.createGain();
+                        osc.type = 'triangle';
+                        osc.frequency.setValueAtTime(f, now + idx * 0.11);
+                        gain.gain.setValueAtTime(0.4, now + idx * 0.11);
+                        gain.gain.exponentialRampToValueAtTime(0.001, now + idx * 0.11 + 0.45);
+                        osc.connect(gain);
+                        gain.connect(this.sfxMasterGain);
+                        osc.start(now + idx * 0.11);
+                        osc.stop(now + idx * 0.11 + 0.46);
+                    });
+                } else if (type === 'water') {
+                    // Bunyi percikan air paip
+                    const bufferSize = this.ctx.sampleRate * 0.25;
+                    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+                    const data = buffer.getChannelData(0);
+                    for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+                    const noise = this.ctx.createBufferSource();
+                    noise.buffer = buffer;
+                    const filter = this.ctx.createBiquadFilter();
+                    filter.type = 'bandpass';
+                    filter.frequency.value = 1100;
+                    const gain = this.ctx.createGain();
+                    gain.gain.setValueAtTime(0.25, now);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.24);
+                    noise.connect(filter);
+                    filter.connect(gain);
+                    gain.connect(this.sfxMasterGain);
+                    noise.start(now);
+                }
+            }
+        }
+
+        const audioEngine = new KampungAudioEngine();
+
+        /**
+         * ============================================================================
+         * 2. ENJIN GRAFIK LATAR BELAKANG HD SEBENAR & KESAN HIDUP (CANVAS 2D HD)
+         * ============================================================================
+         * Menggunakan gambar sebenar Kampung Durian Runtuh, Upin & Ipin, dan
+         * Perjalanan Upin & Ipin daripada repositori GitHub dengan kesan parallax,
+         * cahaya matahari waktu pagi, awan lembut, rama-rama dan kilauan air.
+         */
+        const ASSET_URLS = {
+            upinIpin: "https://raw.githubusercontent.com/AMIRUL278/WUDHU-GO/main/Screenshot%202026-11-25%20002157.png",
+            kampungBg: "https://raw.githubusercontent.com/AMIRUL278/WUDHU-GO/main/Screenshot%202026-11-25%20002215.png",
+            journeyBg: "https://raw.githubusercontent.com/AMIRUL278/WUDHU-GO/main/Screenshot%202026-11-25%20002227.png"
+        };
+
+        const loadedImages = {
+            upinIpin: null,
+            kampungBg: null,
+            journeyBg: null
+        };
+
+        let canvas, ctx;
+        let width = 0, height = 0, dpr = 1;
+        let clouds = [], birds = [], butterflies = [], sunMotes = [];
+        let characterAnimState = 'wave'; // 'wave', 'celebrate', 'sad'
+        let stateTimer = 0;
+        let parallaxOffsetX = 0;
+        let targetParallaxX = 0;
+
+        function preloadGameImages() {
+            Object.keys(ASSET_URLS).forEach(key => {
+                const img = new Image();
+                img.crossOrigin = "anonymous";
+                img.onload = () => { loadedImages[key] = img; };
+                img.src = ASSET_URLS[key];
+            });
+        }
+
+        function triggerHeroShowcaseReaction() {
+            audioEngine.playSFX('correct');
+            triggerCharacterReaction('celebrate');
+            const card = document.getElementById('hero-upin-ipin-card');
+            if (card) {
+                card.classList.add('hero-character-celebrate');
+                setTimeout(() => card.classList.remove('hero-character-celebrate'), 1800);
+            }
+        }
+
+        function initHDWorld() {
+            preloadGameImages();
+            canvas = document.getElementById('game-canvas');
+            ctx = canvas.getContext('2d');
+            resizeHDCanvas();
+
+            clouds = [
+                { x: 0.14, y: 0.12, scale: 1.0, speed: 0.007 },
+                { x: 0.52, y: 0.09, scale: 0.8, speed: 0.005 },
+                { x: 0.84, y: 0.14, scale: 1.1, speed: 0.009 }
+            ];
+
+            birds = Array.from({ length: 5 }, (_, i) => ({
+                x: 0.15 + i * 0.18,
+                y: 0.15 + (i % 2) * 0.05,
+                speed: 0.022 + (i % 3) * 0.007,
+                wingPhase: i * 1.4,
+                size: 0.7 + (i % 2) * 0.25
+            }));
+
+            butterflies = Array.from({ length: 9 }, (_, i) => ({
+                x: 0.08 + Math.random() * 0.84,
+                y: 0.52 + Math.random() * 0.35,
+                phase: Math.random() * Math.PI * 2,
+                color: ['#fde047', '#38bdf8', '#f472b6', '#fb923c'][i % 4]
+            }));
+
+            sunMotes = Array.from({ length: 26 }, () => ({
+                x: Math.random(),
+                y: Math.random() * 0.9,
+                r: 1.5 + Math.random() * 2.8,
+                phase: Math.random() * Math.PI * 2
+            }));
+
+            window.addEventListener('resize', resizeHDCanvas);
+            window.addEventListener('mousemove', (e) => {
+                targetParallaxX = ((e.clientX / window.innerWidth) - 0.5) * 32;
+            });
+        }
+
+        function resizeHDCanvas() {
+            dpr = Math.min(window.devicePixelRatio || 1, 2);
+            width = window.innerWidth;
+            height = window.innerHeight;
+            canvas.width = width * dpr;
+            canvas.height = height * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+        }
+
+        function triggerCharacterReaction(state) {
+            characterAnimState = state;
+            stateTimer = 2.6;
+        }
+
+        // Lukis imej penuh skrin (object-fit: cover) dengan pergerakan parallax lembut
+        function drawCoverImageWithParallax(img, offsetX, zoomFactor = 1.06) {
+            const targetW = width * zoomFactor;
+            const targetH = height * zoomFactor;
+            const imgRatio = img.width / img.height;
+            const screenRatio = targetW / targetH;
+
+            let drawW, drawH;
+            if (screenRatio > imgRatio) {
+                drawW = targetW;
+                drawH = targetW / imgRatio;
+            } else {
+                drawH = targetH;
+                drawW = targetH * imgRatio;
+            }
+
+            const drawX = (width - drawW) * 0.5 + offsetX;
+            const drawY = (height - drawH) * 0.5;
+            ctx.drawImage(img, drawX, drawY, drawW, drawH);
+        }
+
+        function drawSoftCloud(x, y, scale) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.scale(scale, scale);
+            ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+            ctx.beginPath();
+            ctx.arc(-28, 4, 22, 0, Math.PI * 2);
+            ctx.arc(-8, -10, 28, 0, Math.PI * 2);
+            ctx.arc(20, -6, 25, 0, Math.PI * 2);
+            ctx.arc(38, 6, 18, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.restore();
+        }
+
+        function animateHDScene(time) {
+            requestAnimationFrame(animateHDScene);
+            const t = time * 0.001;
+
+            if (stateTimer > 0) {
+                stateTimer -= 0.016;
+                if (stateTimer <= 0) characterAnimState = 'wave';
+            }
+
+            parallaxOffsetX += (targetParallaxX - parallaxOffsetX) * 0.06;
+            ctx.clearRect(0, 0, width, height);
+
+            // Pilih latar belakang mengikut skrin aktif (Kampung untuk Menu, Perjalanan untuk Peringkat 1 & 2)
+            const isJourneyStage = !document.getElementById('screen-gameplay').classList.contains('hidden') &&
+                                   (gameState.currentStage === 1 || gameState.currentStage === 2);
+            const activeBgImg = (isJourneyStage && loadedImages.journeyBg)
+                ? loadedImages.journeyBg
+                : loadedImages.kampungBg;
+
+            if (activeBgImg) {
+                drawCoverImageWithParallax(activeBgImg, parallaxOffsetX * 0.65, 1.07);
+                // Lapisan cahaya matahari pagi yang hangat dan lembut
+                const sunGlow = ctx.createRadialGradient(width * 0.8, height * 0.15, 15, width * 0.8, height * 0.15, width * 0.55);
+                sunGlow.addColorStop(0, 'rgba(254, 249, 195, 0.35)');
+                sunGlow.addColorStop(0.5, 'rgba(253, 224, 71, 0.10)');
+                sunGlow.addColorStop(1, 'rgba(255, 255, 255, 0)');
+                ctx.fillStyle = sunGlow;
+                ctx.fillRect(0, 0, width, height);
+            } else {
+                // Fallback cerah sementara imej dimuatkan
+                const fallbackGrad = ctx.createLinearGradient(0, 0, 0, height);
+                fallbackGrad.addColorStop(0, '#38bdf8');
+                fallbackGrad.addColorStop(0.6, '#bae6fd');
+                fallbackGrad.addColorStop(1, '#22c55e');
+                ctx.fillStyle = fallbackGrad;
+                ctx.fillRect(0, 0, width, height);
+            }
+
+            // Awan lembut bergerak di bahagian atas langit
+            clouds.forEach(c => {
+                c.x += c.speed * 0.016;
+                if (c.x > 1.18) c.x = -0.18;
+                drawSoftCloud(c.x * width + parallaxOffsetX * 0.3, c.y * height, c.scale * (width < 640 ? 0.65 : 0.95));
+            });
+
+            // Burung terbang di langit kampung
+            birds.forEach(b => {
+                b.x += b.speed * 0.016;
+                if (b.x > 1.1) b.x = -0.1;
+                const bx = b.x * width;
+                const by = b.y * height + Math.sin(t * 3 + b.wingPhase) * 7;
+                const flap = Math.sin(t * 11 + b.wingPhase) * 6 * b.size;
+                ctx.strokeStyle = 'rgba(30, 41, 59, 0.75)';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(bx - 11 * b.size, by - flap);
+                ctx.quadraticCurveTo(bx - 4 * b.size, by - 3, bx, by);
+                ctx.quadraticCurveTo(bx + 4 * b.size, by - 3, bx + 11 * b.size, by - flap);
+                ctx.stroke();
+            });
+
+            // Rama-rama berwarna-warni & zarah cahaya pagi yang hidup
+            butterflies.forEach(bf => {
+                const bx = (bf.x * width + Math.sin(t * 1.4 + bf.phase) * 35) % width;
+                const by = bf.y * height + Math.cos(t * 2.1 + bf.phase) * 18;
+                const wingW = Math.abs(Math.cos(t * 12 + bf.phase)) * 6.5 + 2;
+                ctx.fillStyle = bf.color;
+                ctx.beginPath();
+                ctx.ellipse(bx - wingW * 0.5, by, wingW, 4.5, -0.3, 0, Math.PI * 2);
+                ctx.ellipse(bx + wingW * 0.5, by, wingW, 4.5, 0.3, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            sunMotes.forEach(m => {
+                ctx.fillStyle = `rgba(254, 249, 195, ${0.28 + Math.sin(t * 2 + m.phase) * 0.22})`;
+                ctx.beginPath();
+                ctx.arc(m.x * width, m.y * height, m.r, 0, Math.PI * 2);
+                ctx.fill();
+            });
+        }
+
+        /**
+         * ============================================================================
+         * 3. KANDUNGAN PENDIDIKAN ISLAM (MAZHAB SYAFI'I) & DATA PERMAINAN
+         * ============================================================================
+         */
+        const WUDUK_NOTES = {
+            sunat: [
+                {
+                    title: "1. Membaca Basmalah Sebelum Berwuduk",
+                    desc: "Membaca 'Bismillahirrahmanirrahim' ketika mula membasuh kedua-dua tapak tangan.",
+                    example: "Contoh: Upin membaca Bismillah dengan tenang sebelum membuka paip air.",
+                    quote: "Opah: 'Mulakan setiap kebaikan dengan nama Allah supaya diberkati, cucu Opah.'"
+                },
+                {
+                    title: "2. Bersugi Sebelum Berwuduk",
+                    desc: "Membersihkan gigi menggunakan kayu sugi atau berus gigi sebelum berkumur-kumur.",
+                    example: "Contoh: Ipin menggosok giginya sebelum mengambil wuduk di bilik air.",
+                    quote: "Ipin: 'Gigi bersih, mulut wangi, wuduk pun lebih sempurna!'"
+                },
+                {
+                    title: "3. Membasuh Kedua-dua Tapak Tangan",
+                    desc: "Membasuh kedua-dua belah tapak tangan hingga pergelangan tangan sebelum berkumur.",
+                    example: "Contoh: Membasuh tapak tangan dan celah jari sebelum menyentuh air untuk muka.",
+                    quote: "Upin: 'Pastikan tapak tangan bersih dahulu sebelum membasuh muka!'"
+                },
+                {
+                    title: "4. Berkumur-kumur",
+                    desc: "Memasukkan air ke dalam mulut, mengocaknya dan meludahkannya keluar sebelum membasuh muka.",
+                    example: "Contoh: Berkumur untuk menghilangkan sisa makanan di dalam mulut.",
+                    quote: "Kak Ros: 'Berkumur perlahan-lahan ya, jangan sampai tertelan air!'"
+                },
+                {
+                    title: "5. Memasukkan Air ke Hidung & Mengeluarkannya",
+                    desc: "Menyedut sedikit air ke dalam rongga hidung (Istinsyaq) dan menghembuskannya keluar (Istinthar).",
+                    example: "Contoh: Membersihkan bahagian dalam hidung dengan lembut sebelum membasuh muka.",
+                    quote: "Opah: 'Sedut sedikit sahaja di hujung hidung, kemudian hembus keluar.'"
+                },
+                {
+                    title: "6. Menyapu Kedua-dua Telinga",
+                    desc: "Menyapu bahagian luar dan dalam kedua-dua telinga menggunakan air baharu selepas menyapu kepala.",
+                    example: "Contoh: Menggunakan jari telunjuk di bahagian dalam telinga dan ibu jari di belakang telinga.",
+                    quote: "Upin: 'Lepas sapu kepala, kita sapu kedua-dua telinga pula!'"
+                },
+                {
+                    title: "7. Mendahulukan Anggota Kanan",
+                    desc: "Memulakan basuhan tangan kanan sebelum tangan kiri, dan kaki kanan sebelum kaki kiri.",
+                    example: "Contoh: Membasuh tangan kanan hingga siku sebanyak 3 kali, barulah tangan kiri.",
+                    quote: "Opah: 'Rasulullah SAW amat menyukai memulakan sesuatu yang baik dari sebelah kanan.'"
+                },
+                {
+                    title: "8. Membasuh Anggota Sebanyak 3 Kali",
+                    desc: "Mengulangi basuhan anggota wuduk sebanyak tiga kali. (Nota: 1 kali basuhan sempurna sudah sah/wajib, 3 kali adalah sunat).",
+                    example: "Contoh: Membasuh muka sebanyak 3 kali dengan rata.",
+                    quote: "Kak Ros: 'Satu kali basuhan rata sudah sah, tetapi tiga kali itu sunat dan lebih afdal!'"
+                },
+                {
+                    title: "9. Menyelati Celah-celah Jari Tangan & Kaki",
+                    desc: "Menggosok celah-celah jari tangan dan jari kaki supaya air sampai ke seluruh bahagian kulit.",
+                    example: "Contoh: Menggunakan jari kelingking untuk menyelati celah jari-jari kaki.",
+                    quote: "Ipin: 'Celah jari kaki pun kena gosok supaya tidak tertinggal!'"
+                },
+                {
+                    title: "10. Membaca Doa Selepas Selesai Berwuduk",
+                    desc: "Menghadap kiblat sambil mengangkat tangan dan membaca doa selepas selesai berwuduk.",
+                    example: "Contoh: Upin dan Ipin berdoa di luar tempat wuduk surau sebelum masuk bersolat.",
+                    quote: "Upin & Ipin: 'Alhamdulillah, selesai wuduk! Jom kita baca doa sama-sama!'"
+                }
+            ],
+            makruh: [
+                {
+                    title: "1. Membazirkan Air Ketika Berwuduk",
+                    desc: "Membuka paip terlalu besar atau menggunakan air secara berlebihan melebihi keperluan.",
+                    example: "Contoh: Membiarkan air paip mengalir laju semasa berbual atau menggosok anggota.",
+                    quote: "Opah: 'Membazir itu amalan syaitan. Gunakan air sekadar yang perlu sahaja.'"
+                },
+                {
+                    title: "2. Membasuh Anggota Lebih Daripada 3 Kali",
+                    desc: "Melebihi tiga kali basuhan pada anggota wuduk yang disyariatkan basuhan berulang (wuduk tetap sah, tetapi hukumnya makruh).",
+                    example: "Contoh: Membasuh muka sebanyak 4 atau 5 kali tanpa sebab syar'ie.",
+                    quote: "Kak Ros: 'Cukup tiga kali sahaja ya, jangan lebih daripada tiga kali!'"
+                },
+                {
+                    title: "3. Mendahulukan Anggota Kiri Berbanding Kanan",
+                    desc: "Memulakan basuhan tangan kiri atau kaki kiri terlebih dahulu tanpa keuzuran (wuduk tetap sah, tetapi makruh).",
+                    example: "Contoh: Membasuh kaki kiri dahulu sebelum kaki kanan.",
+                    quote: "Upin: 'Eh, silap! Kena basuh sebelah kanan dahulu barulah sebelah kiri!'"
+                },
+                {
+                    title: "4. Berbual Perkara Sia-sia Ketika Berwuduk",
+                    desc: "Bercakap-cakap perkara yang tidak berfaedah semasa sedang berwuduk sehingga mengganggu kekhusyukan.",
+                    example: "Contoh: Bergurau senda dan bercerita tentang permainan video ketika mengambil wuduk.",
+                    quote: "Opah: 'Diam dan tumpukan perhatian semasa berwuduk, bukan masa untuk bersembang.'"
+                },
+                {
+                    title: "5. Berlebih-lebihan Berkumur & Masuk Air ke Hidung Ketika Berpuasa",
+                    desc: "Menyedut air terlalu dalam ke hidung atau berkumur terlalu kuat semasa berpuasa kerana dikhuatiri air masuk ke tekak dan membatalkan puasa.",
+                    example: "Contoh: Menyedut air terlalu kuat ke hidung pada bulan Ramadan.",
+                    quote: "Ipin: 'Masa bulan puasa kena hati-hati masa berkumur, takut tertelan air!'"
+                }
+            ]
+        };
+
+        // DATA PERINGKAT 1: JELAJAH KAMPUNG (5 Situasi Interaktif)
+        const STAGE1_ITEMS = [
+            {
+                id: 1,
+                spotName: "Paip Air Surau",
+                actor: "Upin",
+                situation: "Upin membaca 'Bismillahirrahmanirrahim' sambil membasuh kedua-dua tapak tangannya sebelum memulakan wuduk.",
+                question: "Apakah kategori perbuatan Upin membaca Basmalah sebelum berwuduk?",
+                answer: "SUNAT",
+                explanation: "Membaca Basmalah sebelum memulakan wuduk adalah amalan SUNAT yang mendatangkan pahala dan keberkatan."
+            },
+            {
+                id: 2,
+                spotName: "Tangga Rumah Opah",
+                actor: "Ipin",
+                situation: "Ipin memulakan basuhan pada tangan kirinya dahulu sebelum membasuh tangan kanannya tanpa sebarang keuzuran.",
+                question: "Apakah hukum mendahulukan anggota kiri berbanding anggota kanan ketika berwuduk?",
+                answer: "MAKRUH",
+                explanation: "Mendahulukan anggota kiri berbanding kanan adalah MAKRUH. Wuduk tetap sah, tetapi kita disunatkan memulakan anggota kanan."
+            },
+            {
+                id: 3,
+                spotName: "Tepi Kolam Wuduk",
+                actor: "Upin",
+                situation: "Upin menyelati celah-celah jari tangan dan jari kakinya semasa membasuh anggota wuduk.",
+                question: "Apakah kategori perbuatan menyelati celah-celah jari tangan dan kaki?",
+                answer: "SUNAT",
+                explanation: "Menyelati celah jari tangan dan kaki adalah SUNAT untuk memastikan air meratai seluruh kulit dengan sempurna."
+            },
+            {
+                id: 4,
+                spotName: "Halaman Surau",
+                actor: "Ipin",
+                situation: "Ipin berbual kosong dan ketawa bersama rakan tentang kartun semasa sedang membasuh muka.",
+                question: "Apakah hukum berbual perkara yang sia-sia atau tidak perlu ketika berwuduk?",
+                answer: "MAKRUH",
+                explanation: "Berbual perkara sia-sia ketika berwuduk adalah MAKRUH kerana menghilangkan tumpuan ibadah."
+            },
+            {
+                id: 5,
+                spotName: "Pintu Masuk Surau",
+                actor: "Upin & Ipin",
+                situation: "Setelah selesai membasuh kaki, Upin dan Ipin menghadap kiblat dan membaca doa selepas berwuduk.",
+                question: "Apakah kategori amalan membaca doa selepas selesai berwuduk?",
+                answer: "SUNAT",
+                explanation: "Membaca doa selepas berwuduk sambil menghadap kiblat adalah amalan SUNAT yang sangat digalakkan."
+            }
+        ];
+
+        // DATA PERINGKAT 2: DRAG & DROP / TAP KAD
+        const STAGE2_CARDS = [
+            { id: "c1", text: "Membaca basmalah sebelum wuduk", type: "SUNAT", info: "Membaca Bismillah sebelum wuduk ialah amalan Sunat." },
+            { id: "c2", text: "Membazirkan air ketika berwuduk", type: "MAKRUH", info: "Membazirkan air ialah perkara Makruh dan ditegah dalam Islam." },
+            { id: "c3", text: "Mendahulukan anggota kanan", type: "SUNAT", info: "Memulakan anggota kanan sebelum kiri ialah amalan Sunat." },
+            { id: "c4", text: "Membasuh anggota lebih daripada 3 kali", type: "MAKRUH", info: "Membasuh lebih 3 kali hukumnya Makruh (1 kali basuhan rata sudah sah, 3 kali sunat)." },
+            { id: "c5", text: "Bersugi sebelum berwuduk", type: "SUNAT", info: "Bersugi membersihkan mulut sebelum berwuduk ialah amalan Sunat." },
+            { id: "c6", text: "Berkumur-kumur & memasukkan air ke hidung", type: "SUNAT", info: "Berkumur dan istinsyaq ialah amalan Sunat sebelum membasuh muka." },
+            { id: "c7", text: "Berlebih-lebihan berkumur ketika berpuasa", type: "MAKRUH", info: "Berlebih-lebihan berkumur semasa puasa ialah Makruh kerana bimbang air masuk ke tekak." },
+            { id: "c8", text: "Menyapu kedua-dua telinga", type: "SUNAT", info: "Menyapu bahagian luar dan dalam telinga selepas kepala ialah amalan Sunat." }
+        ];
+
+        // DATA PERINGKAT 3: MISI JIMAT AIR (4 Situasi Interaktif Paip Air)
+        const STAGE3_SCENARIOS = [
+            {
+                step: 1,
+                title: "Situasi 1: Membasuh Muka",
+                prompt: "Upin sudah menadah air di tapak tangan untuk membasuh muka. Paip air masih terbuka deras!",
+                tapOpenInitial: true,
+                waterWastedRate: 8,
+                choices: [
+                    { text: "Tutup paip sebentar semasa menyapu air ke muka", correct: true, feedback: "Syabas! Menutup paip ketika menyapu air ke muka dapat mengelakkan pembaziran air." },
+                    { text: "Biarkan paip terbuka luas sampai habis wuduk", correct: false, feedback: "Opah: 'Eh, jangan biarkan air mengalir tanpa digunakan! Tutup paip semasa menyapu anggota.'" }
+                ]
+            },
+            {
+                step: 2,
+                title: "Situasi 2: Bilangan Basuhan",
+                prompt: "Ipin telah membasuh tangan kanannya hingga ke siku sebanyak 3 kali dengan sempurna.",
+                tapOpenInitial: false,
+                waterWastedRate: 0,
+                choices: [
+                    { text: "Teruskan ke tangan kiri (3 kali sudah sunat & sempurna)", correct: true, feedback: "Tepat sekali! 1 kali basuhan rata sudah wajib/sah, manakala 3 kali adalah sunat. Lebih daripada 3 kali adalah makruh." },
+                    { text: "Basuh lagi sampai 6 kali supaya lebih bersih", correct: false, feedback: "Kak Ros: 'Membasuh lebih daripada 3 kali adalah makruh dan membazir air!'" }
+                ]
+            },
+            {
+                step: 3,
+                title: "Situasi 3: Larasan Air Paip",
+                prompt: "Air paip di surau memancut terlalu laju sehingga terpercik ke baju Upin dan membazir.",
+                tapOpenInitial: true,
+                waterWastedRate: 10,
+                choices: [
+                    { text: "Kecilkan aliran paip sekadar mencukupi untuk meratakan air", correct: true, feedback: "Bagus! Aliran air yang sederhana sudah mencukupi untuk meratakan basuhan wajib dan sunat." },
+                    { text: "Biarkan air memancut deras", correct: false, feedback: "Upin: 'Aduh, basah baju! Mari kita perlahan kan paip air ini.'" }
+                ]
+            },
+            {
+                step: 4,
+                title: "Situasi 4: Selesai Berwuduk",
+                prompt: "Upin dan Ipin selesai membasuh kedua-dua kaki hingga buku lali. Mereka hendak membaca doa wuduk.",
+                tapOpenInitial: true,
+                waterWastedRate: 7,
+                choices: [
+                    { text: "Pastikan paip ditutup rapat sebelum membaca doa", correct: true, feedback: "Alhamdulillah! Paip ditutup rapat, tiada setitis air pun terbazir!" },
+                    { text: "Terus berjalan ke surau tanpa melihat paip", correct: false, feedback: "Ipin: 'Eh, paip belum tutup rapat lagi! Nanti membazir air surau.'" }
+                ]
+            }
+        ];
+
+        // DATA PERINGKAT 4: BANK SOALAN PEPERIKSAAN AKHIR (12 Soalan)
+        const STAGE4_QUESTION_BANK = [
+            {
+                q: "Apakah hukum membaca Basmalah sebelum memulakan wuduk?",
+                options: ["Sunat", "Makruh", "Haram", "Batal wuduk"],
+                correct: 0,
+                exp: "Membaca Basmalah ('Bismillahirrahmanirrahim') sebelum berwuduk hukumnya adalah Sunat."
+            },
+            {
+                q: "Apakah hukum membazirkan air ketika mengambil wuduk?",
+                options: ["Sunat", "Makruh", "Wajib", "Harus"],
+                correct: 1,
+                exp: "Membazirkan air ketika berwuduk adalah Makruh walaupun berada di tepi sungai yang mengalir."
+            },
+            {
+                q: "Berapakah bilangan basuhan yang DISUNATKAN bagi anggota wuduk yang dibasuh?",
+                options: ["1 kali sahaja", "2 kali", "3 kali", "5 kali"],
+                correct: 2,
+                exp: "Basuhan wajib yang sempurna ialah 1 kali, manakala mengulanginya sebanyak 3 kali adalah Sunat."
+            },
+            {
+                q: "Adakah meninggalkan perkara sunat menyebabkan wuduk seseorang terbatal?",
+                options: ["Ya, wuduk terus batal", "Tidak, wuduk tetap sah", "Wajib ulang solat", "Berdosa besar"],
+                correct: 1,
+                exp: "Meninggalkan perkara sunat TIDAK membatalkan wuduk; wuduk tetap sah selagi rukun wuduk sempurna."
+            },
+            {
+                q: "Apakah hukum membasuh anggota wuduk lebih daripada tiga kali tanpa sebab?",
+                options: ["Sunat muakkad", "Wajib", "Makruh", "Membatalkan wuduk"],
+                correct: 2,
+                exp: "Membasuh anggota wuduk lebih daripada 3 kali hukumnya Makruh dan membazirkan air, tetapi tidak membatalkan wuduk."
+            },
+            {
+                q: "Apakah hukum berlebih-lebihan ketika berkumur dan memasukkan air ke hidung bagi orang yang berpuasa?",
+                options: ["Sunat", "Makruh", "Wajib", "Harus"],
+                correct: 1,
+                exp: "Hukumnya Makruh bagi orang berpuasa kerana dikhuatiri air masuk ke dalam rongga tekak dan membatalkan puasa."
+            },
+            {
+                q: "Bagaimanakah cara mendahulukan anggota yang disunatkan ketika berwuduk?",
+                options: ["Kiri dahulu kemudian kanan", "Kanan dahulu kemudian kiri", "Serentak kedua-duanya", "Mana-mana sahaja"],
+                correct: 1,
+                exp: "Disunatkan mendahulukan anggota sebelah kanan (tangan kanan dan kaki kanan) sebelum sebelah kiri."
+            },
+            {
+                q: "Apakah kategori perbuatan bersugi sebelum memulakan wuduk?",
+                options: ["Perkara Makruh", "Perkara Sunat", "Perkara Membatalkan Wuduk", "Rukun Wuduk"],
+                correct: 1,
+                exp: "Bersugi sebelum berwuduk adalah amalan Sunat untuk membersihkan mulut dan gigi."
+            },
+            {
+                q: "Apakah yang disunatkan dilakukan selepas selesai membasuh kedua-dua kaki dalam wuduk?",
+                options: ["Berbual dengan kawan", "Membaca doa selepas wuduk", "Membasuh muka semula", "Berlari ke dalam surau"],
+                correct: 1,
+                exp: "Disunatkan menghadap kiblat dan membaca doa selepas selesai berwuduk."
+            },
+            {
+                q: "Ipin berbual tentang permainan video ketika sedang berwuduk. Apakah hukum perbuatannya?",
+                options: ["Sunat", "Makruh", "Wajib", "Batal wuduk"],
+                correct: 1,
+                exp: "Berbual perkara yang sia-sia atau tidak perlu ketika berwuduk adalah Makruh."
+            },
+            {
+                q: "Upin membasuh mukanya sebanyak 1 kali sahaja dengan rata dan sempurna. Adakah wuduknya sah?",
+                options: ["Tidak sah kerana kurang 3 kali", "Sah, kerana 1 basuhan sempurna sudah memadai", "Makruh kerana 1 kali", "Batal serta-merta"],
+                correct: 1,
+                exp: "Sah! Satu basuhan yang meratai anggota wajib sudah mencukupi untuk sah wuduk, manakala tiga kali adalah sunat."
+            },
+            {
+                q: "Apakah tujuan menyelati celah-celah jari tangan dan kaki ketika berwuduk?",
+                options: ["Supaya air meratai seluruh celah jari", "Supaya cepat habis air", "Supaya wuduk batal", "Supaya dapat berbual lama"],
+                correct: 0,
+                exp: "Menyelati celah jari tangan dan kaki adalah Sunat bagi memastikan air sampai ke seluruh bahagian kulit."
+            }
+        ];
+
+        /**
+         * ============================================================================
+         * 4. PENGURUSAN KEADAAN PERMAINAN (GAME STATE & LOCALSTORAGE)
+         * ============================================================================
+         */
+        let gameState = {
+            score: 0,
+            starsPerStage: { 1: 0, 2: 0, 3: 0, 4: 0 },
+            currentStage: 1,
+            stageStep: 0,
+            selectedTapCardId: null,
+            stage2SolvedCount: 0,
+            waterRemaining: 100,
+            waterInterval: null,
+            tapIsOpen: false,
+            stage4Questions: [],
+            stage4Timer: null,
+            stage4TimeLeft: 20,
+            pendingFeedbackCallback: null
+        };
+
+        function loadSavedProgress() {
+            try {
+                const raw = localStorage.getItem('misi_wuduk_save_v1');
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    gameState.score = parsed.score || 0;
+                    gameState.starsPerStage = parsed.starsPerStage || { 1: 0, 2: 0, 3: 0, 4: 0 };
+                }
+            } catch (e) {}
+            updateHUD();
+        }
+
+        function saveProgress() {
+            try {
+                localStorage.setItem('misi_wuduk_save_v1', JSON.stringify({
+                    score: gameState.score,
+                    starsPerStage: gameState.starsPerStage
+                }));
+            } catch (e) {}
+            updateHUD();
+        }
+
+        function resetFullGame() {
+            audioEngine.playSFX('click');
+            gameState.score = 0;
+            gameState.starsPerStage = { 1: 0, 2: 0, 3: 0, 4: 0 };
+            saveProgress();
+            returnToMainMenu();
+        }
+
+        function getTotalStars() {
+            return Object.values(gameState.starsPerStage).reduce((a, b) => a + b, 0);
+        }
+
+        function getPlayerRank(score) {
+            if (score >= 300) return "JUARA WUDUK KAMPUNG DURIAN RUNTUH!";
+            if (score >= 200) return "Pakar Wuduk";
+            if (score >= 100) return "Pembantu Opah";
+            if (score >= 50) return "Pelatih Wuduk";
+            return "Pengembara Baharu";
+        }
+
+        function updateHUD() {
+            document.getElementById('hud-score').textContent = gameState.score;
+            document.getElementById('hud-stars').textContent = getTotalStars();
+            document.getElementById('hud-rank').textContent = getPlayerRank(gameState.score);
+
+            for (let s = 1; s <= 4; s++) {
+                const el = document.getElementById(`badge-stage-${s}`);
+                if (el) el.textContent = `★ ${gameState.starsPerStage[s] || 0}/3`;
+            }
+        }
+
+        /**
+         * ============================================================================
+         * 5. HELPER AVATAR KARAKTER (UPIN, IPIN, OPAH, KAK ROS)
+         * ============================================================================
+         */
+        function getCharacterAvatarSVG(name) {
+            if (name.includes('Upin') || name.includes('Ipin')) {
+                return `<img src="https://raw.githubusercontent.com/AMIRUL278/WUDHU-GO/main/Screenshot%202026-11-25%20002157.png"
+                             alt="${name}"
+                             class="w-full h-full object-cover object-top" />`;
+            }
+            if (name.includes('Opah')) {
+                return `<svg viewBox="0 0 80 80" class="w-full h-full">
+                    <rect width="80" height="80" fill="#dcfce7"/>
+                    <circle cx="40" cy="44" r="28" fill="#fef9c3" stroke="#15803d" stroke-width="3"/>
+                    <circle cx="40" cy="45" r="20" fill="#f3c6a5"/>
+                    <circle cx="32" cy="43" r="6" fill="none" stroke="#78350f" stroke-width="2.5"/>
+                    <circle cx="48" cy="43" r="6" fill="none" stroke="#78350f" stroke-width="2.5"/>
+                    <line x1="38" y1="43" x2="42" y2="43" stroke="#78350f" stroke-width="2.5"/>
+                    <path d="M33 54 Q40 60 47 54" fill="none" stroke="#991b1b" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>`;
+            }
+            if (name.includes('Kak Ros')) {
+                return `<svg viewBox="0 0 80 80" class="w-full h-full">
+                    <rect width="80" height="80" fill="#fce7f3"/>
+                    <path d="M18 45 Q40 10 62 45 L64 70 L16 70 Z" fill="#1e293b"/>
+                    <circle cx="40" cy="44" r="20" fill="#fcd5b5"/>
+                    <circle cx="33" cy="42" r="3.5" fill="#1e293b"/>
+                    <circle cx="47" cy="42" r="3.5" fill="#1e293b"/>
+                    <path d="M34 53 Q40 58 46 53" fill="none" stroke="#be123c" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>`;
+            }
+            return `<img src="https://raw.githubusercontent.com/AMIRUL278/WUDHU-GO/main/Screenshot%202026-11-25%20002157.png"
+                         alt="Upin dan Ipin"
+                         class="w-full h-full object-cover object-top" />`;
+        }
+
+        function setDialogue(speaker, emotion, text) {
+            document.getElementById('dialogue-speaker').textContent = speaker;
+            document.getElementById('dialogue-emotion').textContent = emotion;
+            document.getElementById('dialogue-text').textContent = `"${text}"`;
+            document.getElementById('dialogue-avatar').innerHTML = getCharacterAvatarSVG(speaker);
+        }
+
+        /**
+         * ============================================================================
+         * 6. NAVIGASI SKRIN & MODAL
+         * ============================================================================
+         */
+        function hideAllScreens() {
+            clearTimers();
+            ['screen-main-menu', 'screen-gameplay', 'screen-stage-select', 'screen-victory'].forEach(id => {
+                document.getElementById(id).classList.add('hidden');
+            });
+        }
+
+        function clearTimers() {
+            if (gameState.waterInterval) {
+                clearInterval(gameState.waterInterval);
+                gameState.waterInterval = null;
+            }
+            if (gameState.stage4Timer) {
+                clearInterval(gameState.stage4Timer);
+                gameState.stage4Timer = null;
+            }
+        }
+
+        function returnToMainMenu() {
+            audioEngine.playSFX('click');
+            hideAllScreens();
+            document.getElementById('screen-main-menu').classList.remove('hidden');
+            document.getElementById('hud-stats').classList.add('hidden');
+            document.getElementById('hud-mission-pill').classList.add('hidden');
+            document.getElementById('btn-pause').classList.add('hidden');
+            document.getElementById('btn-home').classList.add('hidden');
+            triggerCharacterReaction('wave');
+        }
+
+        function openStageSelect() {
+            audioEngine.startBGM();
+            audioEngine.playSFX('click');
+            hideAllScreens();
+            document.getElementById('screen-stage-select').classList.remove('hidden');
+            document.getElementById('hud-stats').classList.remove('hidden');
+            document.getElementById('btn-home').classList.remove('hidden');
+            updateHUD();
+        }
+
+        function startNewOrContinueGame() {
+            audioEngine.startBGM();
+            audioEngine.playSFX('click');
+            // Cari peringkat pertama yang belum dapat 3 bintang, atau mula dari Peringkat 1
+            let nextStage = 1;
+            for (let s = 1; s <= 4; s++) {
+                if ((gameState.starsPerStage[s] || 0) < 3) {
+                    nextStage = s;
+                    break;
+                }
+            }
+            startStage(nextStage);
+        }
+
+        function openModal(id) {
+            audioEngine.playSFX('click');
+            if (id === 'modal-notes') renderNotesTab('sunat');
+            if (id === 'modal-manual') {
+                document.getElementById('manual-avatar-box').innerHTML = `<div class="w-16 h-16 rounded-2xl overflow-hidden border-2 border-green-600">${getCharacterAvatarSVG('Upin')}</div>`;
+            }
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function closeModal(id) {
+            audioEngine.playSFX('click');
+            document.getElementById(id).classList.add('hidden');
+        }
+
+        function togglePause(pause) {
+            audioEngine.playSFX('click');
+            if (pause) {
+                document.getElementById('modal-pause').classList.remove('hidden');
+            } else {
+                document.getElementById('modal-pause').classList.add('hidden');
+            }
+        }
+
+        function toggleMusicQuick() {
+            if (audioEngine.isMusicPlaying) {
+                audioEngine.stopBGM();
+            } else {
+                audioEngine.startBGM();
+            }
+        }
+
+        function toggleSfxQuick() {
+            audioEngine.isSfxEnabled = !audioEngine.isSfxEnabled;
+            if (audioEngine.isSfxEnabled) audioEngine.playSFX('click');
+            updateAudioUI();
+        }
+
+        function updateAudioVolumes() {
+            const bgmVal = parseInt(document.getElementById('slider-bgm-vol').value, 10);
+            const sfxVal = parseInt(document.getElementById('slider-sfx-vol').value, 10);
+            audioEngine.bgmVolume = bgmVal / 100;
+            audioEngine.sfxVolume = sfxVal / 100;
+            document.getElementById('bgm-vol-text').textContent = `${bgmVal}%`;
+            document.getElementById('sfx-vol-text').textContent = `${sfxVal}%`;
+            if (audioEngine.bgmMasterGain) {
+                audioEngine.bgmMasterGain.gain.value = audioEngine.bgmVolume * 0.35;
+            }
+            if (audioEngine.sfxMasterGain) {
+                audioEngine.sfxMasterGain.gain.value = audioEngine.sfxVolume * 0.5;
+            }
+        }
+
+        function updateAudioUI() {
+            const isOn = audioEngine.isMusicPlaying;
+            document.getElementById('icon-music-on').classList.toggle('hidden', !isOn);
+            document.getElementById('icon-music-off').classList.toggle('hidden', isOn);
+            document.getElementById('music-status-label').textContent = isOn ? 'Muzik: ON' : 'Muzik: OFF';
+
+            const settingsMusicBtn = document.getElementById('settings-music-toggle');
+            if (settingsMusicBtn) {
+                settingsMusicBtn.textContent = isOn ? 'DIMATIKAN (KLIK)' : 'HIDUPKAN';
+                settingsMusicBtn.className = isOn ? 'btn-3d btn-red px-4 py-1.5 text-xs' : 'btn-3d btn-green px-4 py-1.5 text-xs';
+            }
+
+            const settingsSfxBtn = document.getElementById('settings-sfx-toggle');
+            if (settingsSfxBtn) {
+                settingsSfxBtn.textContent = audioEngine.isSfxEnabled ? 'AKTIF' : 'SENYAP';
+                settingsSfxBtn.className = audioEngine.isSfxEnabled ? 'btn-3d btn-blue px-4 py-1.5 text-xs' : 'btn-3d btn-wood px-4 py-1.5 text-xs';
+            }
+        }
+
+        /**
+         * ============================================================================
+         * 7. NOTA PEMBELAJARAN INTERAKTIF
+         * ============================================================================
+         */
+        function switchNoteTab(tab) {
+            audioEngine.playSFX('click');
+            renderNotesTab(tab);
+        }
+
+        function renderNotesTab(tab) {
+            const btnSunat = document.getElementById('tab-btn-sunat');
+            const btnMakruh = document.getElementById('tab-btn-makruh');
+            if (tab === 'sunat') {
+                btnSunat.classList.remove('opacity-75');
+                btnMakruh.classList.add('opacity-75');
+            } else {
+                btnMakruh.classList.remove('opacity-75');
+                btnSunat.classList.add('opacity-75');
+            }
+
+            const list = WUDUK_NOTES[tab];
+            const container = document.getElementById('notes-cards-container');
+            const borderCol = tab === 'sunat' ? 'border-green-500' : 'border-red-500';
+            const badgeBg = tab === 'sunat' ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800';
+            const badgeText = tab === 'sunat' ? 'AMALAN SUNAT' : 'PERKARA MAKRUH';
+
+            container.innerHTML = list.map(item => `
+                <div class="bg-white rounded-2xl border-3 ${borderCol} p-4 shadow-sm flex flex-col justify-between">
+                    <div>
+                        <span class="inline-block ${badgeBg} text-[11px] font-black px-2.5 py-0.5 rounded-full mb-1.5">${badgeText}</span>
+                        <h4 class="text-base sm:text-lg font-black text-gray-900 mb-1">${item.title}</h4>
+                        <p class="text-sm text-gray-700 font-semibold mb-2">${item.desc}</p>
+                        <div class="bg-amber-50 border border-amber-200 rounded-xl p-2 text-xs font-bold text-amber-900 mb-2">
+                            ${item.example}
+                        </div>
+                    </div>
+                    <div class="text-xs font-extrabold text-green-800 bg-green-50 px-3 py-1.5 rounded-xl border border-green-200">
+                        💬 ${item.quote}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        /**
+         * ============================================================================
+         * 8. ENJIN PERMAINAN 4 PERINGKAT INTERAKTIF
+         * ============================================================================
+         */
+        function startStage(stageNum) {
+            audioEngine.startBGM();
+            audioEngine.playSFX('click');
+            hideAllScreens();
+
+            gameState.currentStage = stageNum;
+            gameState.stageStep = 0;
+
+            document.getElementById('screen-gameplay').classList.remove('hidden');
+            document.getElementById('hud-stats').classList.remove('hidden');
+            document.getElementById('hud-mission-pill').classList.remove('hidden');
+            document.getElementById('btn-pause').classList.remove('hidden');
+            document.getElementById('btn-home').classList.remove('hidden');
+
+            if (stageNum === 1) initStage1();
+            else if (stageNum === 2) initStage2();
+            else if (stageNum === 3) initStage3();
+            else if (stageNum === 4) initStage4();
+        }
+
+        function restartCurrentStage() {
+            startStage(gameState.currentStage);
+        }
+
+        function showFeedbackModal(isCorrect, title, quote, explanation, onContinue) {
+            const modal = document.getElementById('modal-feedback');
+            const iconBox = document.getElementById('feedback-icon');
+            const titleEl = document.getElementById('feedback-title');
+            const btn = document.getElementById('btn-feedback-continue');
+
+            if (isCorrect) {
+                audioEngine.playSFX('correct');
+                triggerCharacterReaction('celebrate');
+                iconBox.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-3 border-4 border-white shadow-lg bg-green-500 text-white";
+                iconBox.innerHTML = `<svg class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="3.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`;
+                titleEl.className = "text-2xl sm:text-3xl font-black mb-2 text-green-700";
+                btn.className = "btn-3d btn-green w-full py-3 text-lg";
+                btn.textContent = "TERUSKAN";
+            } else {
+                audioEngine.playSFX('wrong');
+                triggerCharacterReaction('sad');
+                iconBox.className = "w-20 h-20 mx-auto rounded-full flex items-center justify-center mb-3 border-4 border-white shadow-lg bg-amber-500 text-white";
+                iconBox.innerHTML = `<svg class="w-12 h-12" fill="none" stroke="currentColor" stroke-width="3.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>`;
+                titleEl.className = "text-2xl sm:text-3xl font-black mb-2 text-amber-800";
+                btn.className = "btn-3d btn-amber w-full py-3 text-lg";
+                btn.textContent = "CUBA SEMULA";
+            }
+
+            titleEl.textContent = title;
+            document.getElementById('feedback-character-quote').textContent = quote;
+            document.getElementById('feedback-explanation').textContent = explanation;
+            gameState.pendingFeedbackCallback = onContinue;
+            modal.classList.remove('hidden');
+        }
+
+        function closeFeedbackModal() {
+            audioEngine.playSFX('click');
+            document.getElementById('modal-feedback').classList.add('hidden');
+            if (typeof gameState.pendingFeedbackCallback === 'function') {
+                const cb = gameState.pendingFeedbackCallback;
+                gameState.pendingFeedbackCallback = null;
+                cb();
+            }
+        }
+
+        // ----------------------------------------------------------------------------
+        // PERINGKAT 1: JELAJAH KAMPUNG – KENALI AMALAN WUDUK
+        // ----------------------------------------------------------------------------
+        function initStage1() {
+            gameState.stageStep = 0;
+            renderStage1Step();
+        }
+
+        function renderStage1Step() {
+            const total = STAGE1_ITEMS.length;
+            if (gameState.stageStep >= total) {
+                completeStage(1);
+                return;
+            }
+
+            const item = STAGE1_ITEMS[gameState.stageStep];
+            document.getElementById('hud-stage-label').textContent = "Peringkat 1: Jelajah Kampung";
+            document.getElementById('hud-progress-text').textContent = `Lokasi ${gameState.stageStep + 1}/${total}`;
+            document.getElementById('stage-progress-bar').style.width = `${((gameState.stageStep) / total) * 100}%`;
+
+            setDialogue("Opah", "Tugasan Kampung", `Lihat situasi di ${item.spotName}. Bantu Upin dan Ipin tentukan sama ada perbuatan ini Sunat atau Makruh!`);
+
+            const ws = document.getElementById('stage-workspace');
+            ws.innerHTML = `
+                <div class="panel-kampung p-4 sm:p-6 max-w-2xl mx-auto animate-pop">
+                    <!-- Visual Scene Strip: Perjalanan Upin & Ipin -->
+                    <div class="relative rounded-2xl overflow-hidden border-3 border-amber-500 mb-3 h-28 sm:h-36 shadow-md">
+                        <img src="https://raw.githubusercontent.com/AMIRUL278/WUDHU-GO/main/Screenshot%202026-11-25%20002227.png"
+                             alt="Situasi Jelajah Kampung"
+                             class="w-full h-full object-cover object-center" />
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent flex items-end justify-between p-3">
+                            <span class="bg-green-600 text-white text-xs font-black px-3 py-1 rounded-full shadow">📍 LOKASI: ${item.spotName.toUpperCase()}</span>
+                            <span class="bg-amber-300 text-amber-950 text-xs font-black px-2.5 py-0.5 rounded-full">Watak: ${item.actor}</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border-3 border-amber-400 p-4 sm:p-5 mb-4 shadow-inner">
+                        <p class="text-base sm:text-lg font-bold text-gray-800 leading-relaxed mb-3">
+                            ${item.situation}
+                        </p>
+                        <div class="bg-sky-50 border-2 border-sky-300 rounded-xl p-3 font-black text-sky-950 text-base sm:text-lg">
+                            ❓ ${item.question}
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
+                        <button onclick="checkStage1Answer('SUNAT')" class="btn-3d btn-green py-4 text-lg sm:text-xl">
+                            ✓ PERKARA SUNAT
+                        </button>
+                        <button onclick="checkStage1Answer('MAKRUH')" class="btn-3d btn-red py-4 text-lg sm:text-xl">
+                            ✕ PERKARA MAKRUH
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        function checkStage1Answer(selected) {
+            const item = STAGE1_ITEMS[gameState.stageStep];
+            if (selected === item.answer) {
+                gameState.score += 15;
+                saveProgress();
+                showFeedbackModal(
+                    true,
+                    "Betul! Syabas!",
+                    "Ipin: 'Betul, betul, betul! Hebatlah awak bantu kami!'",
+                    item.explanation,
+                    () => {
+                        gameState.stageStep++;
+                        renderStage1Step();
+                    }
+                );
+            } else {
+                showFeedbackModal(
+                    false,
+                    "Cuba Lagi!",
+                    "Opah: 'Jangan putus asa, cuba fikirkan semula pengajaran Opah tadi.'",
+                    item.explanation,
+                    null
+                );
+            }
+        }
+
+        // ----------------------------------------------------------------------------
+        // PERINGKAT 2: CABARAN ASINGKAN KAD – SUNAT ATAU MAKRUH (DRAG & DROP + TAP)
+        // ----------------------------------------------------------------------------
+        function initStage2() {
+            gameState.stage2SolvedCount = 0;
+            gameState.selectedTapCardId = null;
+
+            const total = STAGE2_CARDS.length;
+            document.getElementById('hud-stage-label').textContent = "Peringkat 2: Asingkan Kad";
+            document.getElementById('hud-progress-text').textContent = `Kad Selesai: 0/${total}`;
+            document.getElementById('stage-progress-bar').style.width = `0%`;
+
+            setDialogue("Kak Ros", "Cabaran Kad", "Seret kad amalan ke Zon Hijau (Sunat) atau Zon Merah (Makruh). Pada telefon, sentuh kad kemudian sentuh zon jawapan!");
+
+            const shuffled = [...STAGE2_CARDS].sort(() => Math.random() - 0.5);
+
+            const ws = document.getElementById('stage-workspace');
+            ws.innerHTML = `
+                <div class="panel-kampung p-4 sm:p-6 animate-pop">
+                    <!-- Two Drop Zones -->
+                    <div class="grid grid-cols-2 gap-3 sm:gap-5 mb-4">
+                        <div id="zone-SUNAT"
+                             ondragover="event.preventDefault(); this.classList.add('drop-zone-active')"
+                             ondragleave="this.classList.remove('drop-zone-active')"
+                             ondrop="handleDropCard(event, 'SUNAT')"
+                             onclick="handleZoneTap('SUNAT')"
+                             class="cursor-pointer bg-gradient-to-b from-green-100 to-green-200 border-4 border-dashed border-green-600 rounded-3xl p-3 sm:p-5 text-center transition">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-full bg-green-600 text-white flex items-center justify-center font-black text-xl mb-1 shadow">✓</div>
+                            <h3 class="text-base sm:text-xl font-black text-green-900">ZON HIJAU: SUNAT</h3>
+                            <p class="text-[11px] sm:text-xs font-bold text-green-800">Amalan digalakkan & berpahala</p>
+                            <div id="sorted-list-SUNAT" class="mt-2 flex flex-wrap gap-1 justify-center"></div>
+                        </div>
+
+                        <div id="zone-MAKRUH"
+                             ondragover="event.preventDefault(); this.classList.add('drop-zone-active')"
+                             ondragleave="this.classList.remove('drop-zone-active')"
+                             ondrop="handleDropCard(event, 'MAKRUH')"
+                             onclick="handleZoneTap('MAKRUH')"
+                             class="cursor-pointer bg-gradient-to-b from-red-100 to-red-200 border-4 border-dashed border-red-600 rounded-3xl p-3 sm:p-5 text-center transition">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-full bg-red-600 text-white flex items-center justify-center font-black text-xl mb-1 shadow">✕</div>
+                            <h3 class="text-base sm:text-xl font-black text-red-900">ZON MERAH: MAKRUH</h3>
+                            <p class="text-[11px] sm:text-xs font-bold text-red-800">Perkara elok dielakkan</p>
+                            <div id="sorted-list-MAKRUH" class="mt-2 flex flex-wrap gap-1 justify-center"></div>
+                        </div>
+                    </div>
+
+                    <!-- Cards Pool -->
+                    <div class="bg-white/80 rounded-2xl p-3 border-2 border-amber-300">
+                        <div class="text-xs font-extrabold text-amber-900 text-center mb-2">
+                            PILIH KAD AMALAN DI BAWAH (SERET ATAU SENTUH):
+                        </div>
+                        <div id="cards-pool" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-2.5">
+                            ${shuffled.map(card => `
+                                <div id="card-${card.id}"
+                                     draggable="true"
+                                     ondragstart="handleDragStart(event, '${card.id}')"
+                                     onclick="handleCardTap('${card.id}')"
+                                     class="sort-card bg-white border-3 border-amber-500 rounded-2xl p-3 text-center font-extrabold text-gray-800 text-xs sm:text-sm shadow-md hover:bg-amber-50 flex items-center justify-center min-h-[64px]">
+                                    ${card.text}
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function handleDragStart(ev, cardId) {
+            ev.dataTransfer.setData("text/plain", cardId);
+            gameState.selectedTapCardId = cardId;
+        }
+
+        function handleCardTap(cardId) {
+            audioEngine.playSFX('click');
+            document.querySelectorAll('.sort-card').forEach(el => el.classList.remove('selected-tap'));
+            if (gameState.selectedTapCardId === cardId) {
+                gameState.selectedTapCardId = null;
+                return;
+            }
+            gameState.selectedTapCardId = cardId;
+            const el = document.getElementById(`card-${cardId}`);
+            if (el) el.classList.add('selected-tap');
+        }
+
+        function handleDropCard(ev, targetZone) {
+            ev.preventDefault();
+            document.getElementById(`zone-${targetZone}`).classList.remove('drop-zone-active');
+            const cardId = ev.dataTransfer.getData("text/plain") || gameState.selectedTapCardId;
+            if (cardId) verifyCardPlacement(cardId, targetZone);
+        }
+
+        function handleZoneTap(targetZone) {
+            if (!gameState.selectedTapCardId) return;
+            verifyCardPlacement(gameState.selectedTapCardId, targetZone);
+        }
+
+        function verifyCardPlacement(cardId, targetZone) {
+            const cardData = STAGE2_CARDS.find(c => c.id === cardId);
+            const cardEl = document.getElementById(`card-${cardId}`);
+            if (!cardData || !cardEl) return;
+
+            if (cardData.type === targetZone) {
+                audioEngine.playSFX('correct');
+                triggerCharacterReaction('celebrate');
+                gameState.score += 10;
+                gameState.stage2SolvedCount++;
+                gameState.selectedTapCardId = null;
+                saveProgress();
+
+                // Pindahkan kad ke zon betul
+                cardEl.remove();
+                const pill = document.createElement('span');
+                pill.className = targetZone === 'SUNAT'
+                    ? 'bg-green-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm animate-pop'
+                    : 'bg-red-600 text-white text-[11px] font-bold px-2.5 py-1 rounded-full shadow-sm animate-pop';
+                pill.textContent = cardData.text;
+                document.getElementById(`sorted-list-${targetZone}`).appendChild(pill);
+
+                const total = STAGE2_CARDS.length;
+                document.getElementById('hud-progress-text').textContent = `Kad Selesai: ${gameState.stage2SolvedCount}/${total}`;
+                document.getElementById('stage-progress-bar').style.width = `${(gameState.stage2SolvedCount / total) * 100}%`;
+                setDialogue("Upin", "Gembira!", `Tepat sekali! ${cardData.info}`);
+
+                if (gameState.stage2SolvedCount >= total) {
+                    setTimeout(() => completeStage(2), 700);
+                }
+            } else {
+                audioEngine.playSFX('wrong');
+                triggerCharacterReaction('sad');
+                cardEl.classList.add('animate-shake');
+                setTimeout(() => cardEl.classList.remove('animate-shake'), 450);
+                setDialogue("Opah", "Penerangan", `Belum tepat, cuba lagi! ${cardData.info}`);
+            }
+        }
+
+        // ----------------------------------------------------------------------------
+        // PERINGKAT 3: MISI JIMAT AIR BERSAMA UPIN DAN IPIN
+        // ----------------------------------------------------------------------------
+        function initStage3() {
+            gameState.stageStep = 0;
+            gameState.waterRemaining = 100;
+            renderStage3Step();
+        }
+
+        function renderStage3Step() {
+            clearTimers();
+            const total = STAGE3_SCENARIOS.length;
+            if (gameState.stageStep >= total) {
+                completeStage(3);
+                return;
+            }
+
+            const scen = STAGE3_SCENARIOS[gameState.stageStep];
+            gameState.tapIsOpen = scen.tapOpenInitial;
+
+            document.getElementById('hud-stage-label').textContent = "Peringkat 3: Misi Jimat Air";
+            document.getElementById('hud-progress-text').textContent = `Situasi ${gameState.stageStep + 1}/${total}`;
+            document.getElementById('stage-progress-bar').style.width = `${((gameState.stageStep) / total) * 100}%`;
+
+            setDialogue("Upin & Ipin", "Tempat Wuduk", scen.prompt);
+
+            const ws = document.getElementById('stage-workspace');
+            ws.innerHTML = `
+                <div class="panel-kampung p-5 sm:p-6 max-w-2xl mx-auto animate-pop">
+                    <div class="flex flex-wrap items-center justify-between gap-2 mb-3">
+                        <span class="bg-sky-600 text-white text-xs font-black px-3 py-1 rounded-full">💧 ${scen.title.toUpperCase()}</span>
+                        <div class="flex items-center gap-2 bg-white px-3 py-1 rounded-full border-2 border-sky-400">
+                            <span class="text-xs font-black text-sky-900">Tangki Air Surau:</span>
+                            <span id="water-meter-val" class="text-sm font-black text-green-600">${gameState.waterRemaining}%</span>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Water Tap & Stream Visual -->
+                    <div class="bg-gradient-to-b from-sky-100 to-sky-200 rounded-3xl border-3 border-sky-500 p-4 mb-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+                        <div class="flex items-center gap-4">
+                            <!-- Custom SVG Water Tap -->
+                            <div class="relative w-24 h-28 flex flex-col items-center">
+                                <svg viewBox="0 0 100 90" class="w-24 h-20">
+                                    <rect x="0" y="35" width="55" height="16" rx="4" fill="#64748b"/>
+                                    <path d="M55 35 Q75 35 75 55 L75 65 L59 65 L59 55 Q59 51 55 51 Z" fill="#94a3b8"/>
+                                    <rect x="35" y="15" width="10" height="20" fill="#475569"/>
+                                    <rect x="20" y="10" width="40" height="8" rx="4" fill="#ef4444"/>
+                                </svg>
+                                <!-- Animated Water Stream -->
+                                <div id="water-stream-visual" class="${gameState.tapIsOpen ? '' : 'hidden'} w-4 h-12 rounded-b-full water-stream-anim -mt-3 shadow"></div>
+                            </div>
+
+                            <div>
+                                <div id="tap-status-badge" class="inline-block px-3 py-1 rounded-full text-xs font-black mb-1 ${gameState.tapIsOpen ? 'bg-red-500 text-white animate-pulse' : 'bg-green-600 text-white'}">
+                                    ${gameState.tapIsOpen ? '⚠️ PAIP TERBUKA DERAS!' : '✓ PAIP DITUTUP / TERKAWAL'}
+                                </div>
+                                <p class="text-xs sm:text-sm font-bold text-sky-950">
+                                    ${gameState.tapIsOpen ? 'Klik butang paip untuk mengawal aliran air supaya tidak membazir!' : 'Aliran air terkawal dengan baik.'}
+                                </p>
+                            </div>
+                        </div>
+
+                        <button onclick="toggleInteractiveTap()" class="btn-3d ${gameState.tapIsOpen ? 'btn-red' : 'btn-blue'} px-4 py-2.5 text-xs sm:text-sm flex-shrink-0">
+                            ${gameState.tapIsOpen ? 'TUTUP PAIP AIR' : 'BUKA / KAWAL PAIP'}
+                        </button>
+                    </div>
+
+                    <!-- Action Choices -->
+                    <div class="space-y-2.5">
+                        <div class="text-xs font-extrabold text-amber-900">PILIH TINDAKAN TERBAIK UNTUK UPIN & IPIN:</div>
+                        ${scen.choices.map((ch, idx) => `
+                            <button onclick="answerStage3(${idx})" class="w-full text-left bg-white hover:bg-green-50 border-3 border-amber-500 hover:border-green-600 rounded-2xl p-3.5 font-extrabold text-gray-800 text-sm sm:text-base transition flex items-center gap-3 shadow-sm">
+                                <span class="w-8 h-8 rounded-full bg-amber-400 text-amber-950 flex items-center justify-center font-black flex-shrink-0">${idx === 0 ? 'A' : 'B'}</span>
+                                <span>${ch.text}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            // Meter air berkurangan perlahan jika paip dibiarkan terbuka membazir
+            if (gameState.tapIsOpen && scen.waterWastedRate > 0) {
+                gameState.waterInterval = setInterval(() => {
+                    if (!gameState.tapIsOpen) return;
+                    gameState.waterRemaining = Math.max(25, gameState.waterRemaining - 2);
+                    const meterEl = document.getElementById('water-meter-val');
+                    if (meterEl) {
+                        meterEl.textContent = `${gameState.waterRemaining}%`;
+                        if (gameState.waterRemaining < 50) meterEl.className = "text-sm font-black text-red-600";
+                    }
+                }, 900);
+            }
+        }
+
+        function toggleInteractiveTap() {
+            audioEngine.playSFX('water');
+            gameState.tapIsOpen = !gameState.tapIsOpen;
+            const streamEl = document.getElementById('water-stream-visual');
+            const badgeEl = document.getElementById('tap-status-badge');
+            if (streamEl) streamEl.classList.toggle('hidden', !gameState.tapIsOpen);
+            if (badgeEl) {
+                badgeEl.className = gameState.tapIsOpen
+                    ? 'inline-block px-3 py-1 rounded-full text-xs font-black mb-1 bg-red-500 text-white animate-pulse'
+                    : 'inline-block px-3 py-1 rounded-full text-xs font-black mb-1 bg-green-600 text-white';
+                badgeEl.textContent = gameState.tapIsOpen ? '⚠️ PAIP TERBUKA DERAS!' : '✓ PAIP DITUTUP / TERKAWAL';
+            }
+        }
+
+        function answerStage3(choiceIdx) {
+            const scen = STAGE3_SCENARIOS[gameState.stageStep];
+            const choice = scen.choices[choiceIdx];
+
+            if (choice.correct) {
+                clearTimers();
+                gameState.tapIsOpen = false;
+                gameState.score += 20;
+                saveProgress();
+                showFeedbackModal(
+                    true,
+                    "Bijak Berjimat Air!",
+                    "Upin & Ipin: 'Terima kasih! Wuduk sempurna dan air pun tidak membazir!'",
+                    choice.feedback,
+                    () => {
+                        gameState.stageStep++;
+                        renderStage3Step();
+                    }
+                );
+            } else {
+                audioEngine.playSFX('water');
+                showFeedbackModal(
+                    false,
+                    "Awas Pembaziran Air!",
+                    "Opah: 'Ingat pesan Opah, membazirkan air ketika berwuduk hukumnya makruh.'",
+                    choice.feedback,
+                    null
+                );
+            }
+        }
+
+        // ----------------------------------------------------------------------------
+        // PERINGKAT 4: PEPERIKSAAN AKHIR – PAKAR WUDUK KAMPUNG (10 SOALAN RAWAK)
+        // ----------------------------------------------------------------------------
+        function initStage4() {
+            gameState.stageStep = 0;
+            // Pilih 10 soalan secara rawak daripada bank soalan
+            gameState.stage4Questions = [...STAGE4_QUESTION_BANK]
+                .sort(() => Math.random() - 0.5)
+                .slice(0, 10);
+            renderStage4Question();
+        }
+
+        function renderStage4Question() {
+            clearTimers();
+            const total = gameState.stage4Questions.length;
+            if (gameState.stageStep >= total) {
+                completeStage(4);
+                return;
+            }
+
+            const qObj = gameState.stage4Questions[gameState.stageStep];
+            gameState.stage4TimeLeft = 25;
+
+            document.getElementById('hud-stage-label').textContent = "Peringkat 4: Pakar Wuduk";
+            document.getElementById('hud-progress-text').textContent = `Soalan ${gameState.stageStep + 1}/${total}`;
+            document.getElementById('stage-progress-bar').style.width = `${((gameState.stageStep) / total) * 100}%`;
+
+            setDialogue("Opah", "Ujian Akhir", "Jawab soalan ini dengan teliti sebelum masa tamat. Opah doakan kejayaan kamu!");
+
+            const letters = ['A', 'B', 'C', 'D'];
+            const ws = document.getElementById('stage-workspace');
+            ws.innerHTML = `
+                <div class="panel-kampung p-5 sm:p-7 max-w-3xl mx-auto animate-pop">
+                    <div class="flex items-center justify-between mb-3">
+                        <span class="bg-purple-600 text-white text-xs font-black px-3 py-1 rounded-full">SOALAN ${gameState.stageStep + 1} DARIPADA ${total}</span>
+                        <div class="flex items-center gap-1.5 bg-amber-100 border-2 border-amber-500 px-3 py-1 rounded-full">
+                            <span class="text-xs font-extrabold text-amber-900">⏱️ Masa:</span>
+                            <span id="q4-timer" class="text-sm font-black text-red-600">25s</span>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl border-3 border-purple-400 p-4 sm:p-5 mb-4 shadow-inner">
+                        <h3 class="text-lg sm:text-xl font-black text-gray-900 leading-snug">
+                            ${qObj.q}
+                        </h3>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        ${qObj.options.map((opt, idx) => `
+                            <button onclick="submitStage4Answer(${idx})" class="text-left bg-white hover:bg-purple-50 border-3 border-amber-500 hover:border-purple-600 rounded-2xl p-3.5 font-extrabold text-gray-800 text-sm sm:text-base transition flex items-center gap-3 shadow-sm active:scale-95">
+                                <span class="w-8 h-8 rounded-full bg-purple-600 text-white flex items-center justify-center font-black flex-shrink-0">${letters[idx]}</span>
+                                <span>${opt}</span>
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+
+            gameState.stage4Timer = setInterval(() => {
+                // Jangan kurangkan masa jika modal pause atau feedback sedang dibuka
+                if (!document.getElementById('modal-pause').classList.contains('hidden') ||
+                    !document.getElementById('modal-feedback').classList.contains('hidden')) {
+                    return;
+                }
+                gameState.stage4TimeLeft--;
+                const timerEl = document.getElementById('q4-timer');
+                if (timerEl) timerEl.textContent = `${gameState.stage4TimeLeft}s`;
+
+                if (gameState.stage4TimeLeft <= 0) {
+                    clearTimers();
+                    showFeedbackModal(
+                        false,
+                        "Masa Tamat!",
+                        "Upin: 'Cepatnya masa berlalu! Mari kita lihat jawapan yang tepat.'",
+                        qObj.exp,
+                        () => {
+                            gameState.stageStep++;
+                            renderStage4Question();
+                        }
+                    );
+                }
+            }, 1000);
+        }
+
+        function submitStage4Answer(selectedIdx) {
+            clearTimers();
+            const qObj = gameState.stage4Questions[gameState.stageStep];
+            if (selectedIdx === qObj.correct) {
+                gameState.score += 15;
+                saveProgress();
+                showFeedbackModal(
+                    true,
+                    "Jawapan Tepat!",
+                    "Upin & Ipin: 'Wah, bijaknya! Teruskan ke soalan seterusnya!'",
+                    qObj.exp,
+                    () => {
+                        gameState.stageStep++;
+                        renderStage4Question();
+                    }
+                );
+            } else {
+                showFeedbackModal(
+                    false,
+                    "Kurang Tepat",
+                    "Kak Ros: 'Tidak mengapa, belajar daripada kesilapan itu bagus!'",
+                    `Jawapan yang tepat ialah: "${qObj.options[qObj.correct]}". ${qObj.exp}`,
+                    () => {
+                        gameState.stageStep++;
+                        renderStage4Question();
+                    }
+                );
+            }
+        }
+
+        // ----------------------------------------------------------------------------
+        // PENYELESAIAN PERINGKAT & PAPARAN KEMENANGAN AKHIR
+        // ----------------------------------------------------------------------------
+        function completeStage(stageNum) {
+            clearTimers();
+            audioEngine.playSFX('star');
+            triggerCharacterReaction('celebrate');
+
+            gameState.starsPerStage[stageNum] = 3;
+            gameState.score += 25; // Bonus tamat peringkat
+            saveProgress();
+
+            if (stageNum < 4) {
+                showFeedbackModal(
+                    true,
+                    `Tahniah! Peringkat ${stageNum} Selesai!`,
+                    "Upin & Ipin: 'Yeay! Kita dapat 3 bintang! Jom teruskan ke peringkat seterusnya!'",
+                    `Anda telah berjaya menamatkan Peringkat ${stageNum} dan memperoleh +25 mata bonus!`,
+                    () => startStage(stageNum + 1)
+                );
+            } else {
+                // Tamat semua 4 peringkat -> Paparan Kemenangan Juara Wuduk!
+                showGrandVictoryScreen();
+            }
+        }
+
+        function showGrandVictoryScreen() {
+            hideAllScreens();
+            audioEngine.playSFX('victory');
+            triggerCharacterReaction('celebrate');
+
+            document.getElementById('screen-victory').classList.remove('hidden');
+            document.getElementById('hud-stats').classList.remove('hidden');
+            document.getElementById('btn-home').classList.remove('hidden');
+
+            document.getElementById('victory-final-score').textContent = gameState.score;
+            document.getElementById('victory-final-rank').textContent = getPlayerRank(gameState.score);
+
+            const starsContainer = document.getElementById('victory-stars-display');
+            starsContainer.innerHTML = Array(5).fill(0).map(() => `
+                <svg class="w-10 h-10 sm:w-12 sm:h-12 text-yellow-400 drop-shadow-md animate-bounce" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                </svg>
+            `).join('');
+        }
+
+        /**
+         * ============================================================================
+         * 9. PERMULAAN APLIKASI (WINDOW ONLOAD)
+         * ============================================================================
+         */
+        window.onload = function () {
+            loadSavedProgress();
+            initHDWorld();
+            animateHDScene(0);
+
+            // Animasi skrin pemuatan lancar
+            const bar = document.getElementById('loading-bar');
+            const loadText = document.getElementById('loading-text');
+            setTimeout(() => { bar.style.width = '65%'; loadText.textContent = 'Menyiapkan Surau & Tempat Wuduk HD...'; }, 300);
+            setTimeout(() => { bar.style.width = '100%'; loadText.textContent = 'Upin & Ipin Sudah Bersedia!'; }, 700);
+            setTimeout(() => {
+                const loader = document.getElementById('loading-screen');
+                loader.style.opacity = '0';
+                setTimeout(() => loader.classList.add('hidden'), 500);
+            }, 1100);
+        };
+    </script>
+</body>
+</html>
